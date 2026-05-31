@@ -1,55 +1,84 @@
 const express = require('express');
-const Database = require('better-sqlite3');
+const fs = require('fs');
 const path = require('path');
 
 const app = express();
 app.use(express.json());
 app.use(express.static('public'));
 
-// База данных (better-sqlite3 синхронная)
-const db = new Database('profitly.db');
+// Путь к файлу с данными
+const DATA_FILE = path.join(__dirname, 'operations.json');
 
-// Создаём таблицу
-db.exec(`
-  CREATE TABLE IF NOT EXISTS operations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    client_name TEXT,
-    service TEXT,
-    amount INTEGER,
-    date TEXT
-  )
-`);
+// Инициализация файла с данными
+if (!fs.existsSync(DATA_FILE)) {
+  fs.writeFileSync(DATA_FILE, JSON.stringify([]));
+}
+
+// Вспомогательная функция: прочитать операции
+function readOperations() {
+  const data = fs.readFileSync(DATA_FILE, 'utf8');
+  return JSON.parse(data);
+}
+
+// Вспомогательная функция: записать операции
+function writeOperations(operations) {
+  fs.writeFileSync(DATA_FILE, JSON.stringify(operations, null, 2));
+}
 
 // API: получить все операции
 app.get('/api/operations', (req, res) => {
-  const rows = db.prepare('SELECT * FROM operations ORDER BY date DESC').all();
-  res.json(rows);
+  const operations = readOperations();
+  res.json(operations.sort((a, b) => new Date(b.date) - new Date(a.date)));
 });
 
 // API: добавить операцию
 app.post('/api/operations', (req, res) => {
   const { client_name, service, amount } = req.body;
-  const date = new Date().toISOString();
+  const operations = readOperations();
   
-  const stmt = db.prepare('INSERT INTO operations (client_name, service, amount, date) VALUES (?, ?, ?, ?)');
-  const info = stmt.run(client_name, service, amount, date);
+  const newOperation = {
+    id: Date.now(),
+    client_name,
+    service,
+    amount,
+    date: new Date().toISOString()
+  };
   
-  res.json({ id: info.lastInsertRowid });
+  operations.push(newOperation);
+  writeOperations(operations);
+  
+  res.json({ id: newOperation.id });
 });
 
 // API: статистика
 app.get('/api/stats', (req, res) => {
-  const rows = db.prepare(`
-    SELECT 
-      client_name,
-      SUM(amount) as total,
-      COUNT(*) as visits,
-      MAX(date) as last_visit
-    FROM operations
-    GROUP BY client_name
-    ORDER BY total DESC
-    LIMIT 10
-  `).all();
+  const operations = readOperations();
+  
+  // Группировка по клиентам
+  const clientMap = new Map();
+  
+  for (const op of operations) {
+    if (!clientMap.has(op.client_name)) {
+      clientMap.set(op.client_name, {
+        client_name: op.client_name,
+        total: 0,
+        visits: 0,
+        last_visit: op.date
+      });
+    }
+    
+    const client = clientMap.get(op.client_name);
+    client.total += op.amount;
+    client.visits++;
+    
+    if (new Date(op.date) > new Date(client.last_visit)) {
+      client.last_visit = op.date;
+    }
+  }
+  
+  const rows = Array.from(clientMap.values())
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 10);
   
   const totalIncome = rows.reduce((sum, r) => sum + r.total, 0);
   
