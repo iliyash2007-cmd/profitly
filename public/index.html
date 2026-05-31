@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profitly</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .header {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2e7d32;
+        }
+        .income {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        .income-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .client-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .client-name {
+            font-weight: 600;
+        }
+        .client-percent {
+            color: #ff6d00;
+            font-weight: bold;
+        }
+        .warning {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        button {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .nav-btn {
+            background: #e0e0e0;
+            color: #333;
+            margin-top: 0;
+        }
+        .active-nav {
+            background: #2e7d32;
+            color: white;
+        }
+        .tab {
+            display: none;
+        }
+        .tab.active {
+            display: block;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .ai-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .ai-text {
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="card" style="background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white;">
+        <div class="header" style="color: white;">💰 Profitly</div>
+        <div class="income-label" style="color: rgba(255,255,255,0.9);">Общий доход</div>
+        <div id="totalIncome" class="income" style="color: white;">0 ₽</div>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="nav-btn active-nav" onclick="showTab('dashboard')">📊 Дашборд</button>
+        <button class="nav-btn" onclick="showTab('add')">➕ Добавить</button>
+    </div>
+
+    <!-- Вкладка Дашборд -->
+    <div id="dashboardTab" class="tab active">
+        <div class="card">
+            <div class="section-title">🏆 ТОП-10 клиентов</div>
+            <div id="topClientsList" style="min-height: 200px;"></div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">⚠️ Напоминания</div>
+            <div id="remindersList"></div>
+        </div>
+
+        <div class="card ai-card">
+            <div class="section-title">🧠 Совет нейросети</div>
+            <div id="aiAdvice" class="ai-text">Анализируем ваши данные...</div>
+        </div>
+    </div>
+
+    <!-- Вкладка Добавление -->
+    <div id="addTab" class="tab">
+        <div class="card">
+            <div class="section-title">✨ Новая операция</div>
+            <div class="form-group">
+                <input type="text" id="clientName" placeholder="Имя клиента" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <input type="text" id="service" placeholder="Услуга (маникюр, стрижка...)" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <input type="number" id="amount" placeholder="Сумма в ₽" autocomplete="off">
+            </div>
+            <button onclick="addOperation()">✅ Сохранить</button>
+        </div>
+    </div>
+
+    <script>
+        async function loadDashboard() {
+            const res = await fetch('/api/stats');
+            const data = await res.json();
+            
+            document.getElementById('totalIncome').innerText = data.total_income.toLocaleString() + ' ₽';
+            
+            const listHtml = data.top_clients.map((c, idx) => {
+                const percent = (c.total / data.total_income * 100).toFixed(1);
+                return `<div class="client-item">
+                    <span class="client-name">${idx+1}. ${c.client_name}</span>
+                    <span class="client-percent">${c.total.toLocaleString()} ₽ (${percent}%)</span>
+                </div>`;
+            }).join('');
+            document.getElementById('topClientsList').innerHTML = listHtml || '<div style="color:#999;">Нет данных. Добавьте первую операцию ➕</div>';
+            
+            loadReminders();
+            loadAIAdvice();
+        }
+        
+        async function loadReminders() {
+            const res = await fetch('/api/operations');
+            const ops = await res.json();
+            
+            const lastVisits = {};
+            ops.forEach(op => {
+                if (!lastVisits[op.client_name] || new Date(op.date) > new Date(lastVisits[op.client_name])) {
+                    lastVisits[op.client_name] = op.date;
+                }
+            });
+            
+            const now = new Date();
+            const reminders = [];
+            for (const [client, lastDate] of Object.entries(lastVisits)) {
+                const daysSince = Math.floor((now - new Date(lastDate)) / (1000*60*60*24));
+                if (daysSince > 30) {
+                    reminders.push(`<div class="warning">⚠️ ${client} не был ${daysSince} дней → предложите скидку 10%</div>`);
+                }
+            }
+            
+            document.getElementById('remindersList').innerHTML = reminders.length 
+                ? reminders.join('') 
+                : '<div style="color:#999;">✅ Все клиенты активны</div>';
+        }
+        
+        async function loadAIAdvice() {
+            const res = await fetch('/api/operations');
+            const ops = await res.json();
+            
+            if (ops.length < 3) {
+                document.getElementById('aiAdvice').innerHTML = '📊 Добавьте 3+ операции, чтобы получить персональный совет';
+                return;
+            }
+            
+            // Анализ по дням недели
+            const weekdayCount = [0,0,0,0,0,0,0];
+            ops.forEach(op => {
+                const weekday = new Date(op.date).getDay();
+                weekdayCount[weekday]++;
+            });
+            
+            const minDay = weekdayCount.indexOf(Math.min(...weekdayCount));
+            const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+            const avgCheck = ops.reduce((sum, op) => sum + op.amount, 0) / ops.length;
+            const potential = Math.round(avgCheck * 2 * 4);
+            
+            document.getElementById('aiAdvice').innerHTML = `
+                🧠 По <strong>${days[minDay]}</strong> у вас обычно тихо.<br>
+                💡 Сделайте скидку 15% для новых клиентов в этот день.<br>
+                📈 Потенциальный доход: <strong>+${potential.toLocaleString()} ₽/мес</strong>
+            `;
+        }
+        
+        async function addOperation() {
+            const clientName = document.getElementById('clientName').value.trim();
+            const service = document.getElementById('service').value.trim();
+            const amount = parseInt(document.getElementById('amount').value);
+            
+            if (!clientName || !service || !amount) {
+                alert('Заполните все поля');
+                return;
+            }
+            
+            await fetch('/api/operations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ client_name: clientName, service, amount })
+            });
+            
+            document.getElementById('clientName').value = '';
+            document.getElementById('service').value = '';
+            document.getElementById('amount').value = '';
+            
+            await loadDashboard();
+            showTab('dashboard');
+            alert('✅ Операция добавлена!');
+        }
+        
+        function showTab(tab) {
+            document.getElementById('dashboardTab').classList.toggle('active', tab === 'dashboard');
+            document.getElementById('addTab').classList.toggle('active', tab === 'add');
+            
+            const btns = document.querySelectorAll('.nav-btn');
+            btns.forEach(btn => btn.classList.remove('active-nav'));
+            if (tab === 'dashboard') btns[0].classList.add('active-nav');
+            else btns[1].classList.add('active-nav');
+            
+            if (tab === 'dashboard') loadDashboard();
+        }
+        
+        loadDashboard();
+    </script>
+</body>
+</html>
