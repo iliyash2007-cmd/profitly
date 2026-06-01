@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1780343161823,
+    "clientId": 1780343137931,
+    "clientName": "Илья",
+    "serviceId": 1780343155848,
+    "serviceName": "Смешение цемента",
+    "amount": 12000,
+    "date": "2026-06-01",
+    "datetime": "2026-06-01T19:46:01.823Z",
+    "weekday": "Monday",
+    "weekdayIndex": 1,
+    "hour": 22
+  },
+  {
+    "id": 1780343179247,
+    "clientId": 1780343173254,
+    "clientName": "Кира",
+    "serviceId": 2,
+    "serviceName": "Педикюр",
+    "amount": 3500,
+    "date": "2026-06-01",
+    "datetime": "2026-06-01T19:46:19.247Z",
+    "weekday": "Monday",
+    "weekdayIndex": 1,
+    "hour": 22
+  },
+  {
+    "id": 1780345582592,
+    "clientId": 1780343173254,
+    "clientName": "Кира",
+    "serviceId": "1780345564515",
+    "serviceName": "Крепостной",
+    "amount": 1000,
+    "date": "2026-06-01",
+    "datetime": "2026-06-01T20:26:22.592Z",
+    "weekday": "Monday",
+    "weekdayIndex": 1,
+    "hour": 23
+  },
+  {
+    "id": 1780345992853,
+    "clientId": 1780343173254,
+    "clientName": "Кира",
+    "serviceId": "2",
+    "serviceName": "Педикюр",
+    "amount": 3500,
+    "date": "2026-06-01",
+    "datetime": "2026-06-01T20:33:12.853Z",
+    "weekday": "Monday",
+    "weekdayIndex": 1,
+    "hour": 23
+  }
+]
