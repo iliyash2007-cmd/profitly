@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
 
 const app = express();
 app.use(express.json());
@@ -46,31 +47,56 @@ app.post('/api/settings', (req, res) => {
   res.json({ success: true });
 });
 
-// API: клиенты
+// API: получить всех клиентов
 app.get('/api/clients', (req, res) => {
   res.json(readJSON('clients.json'));
 });
 
+// API: добавить нового клиента
 app.post('/api/clients', (req, res) => {
   const clients = readJSON('clients.json');
-  const { id, name, phone, type } = req.body;
-  if (id) {
-    const index = clients.findIndex(c => c.id === id);
-    if (index !== -1) clients[index] = { ...clients[index], name, phone, type };
-  } else {
-    clients.push({ id: Date.now(), name, phone, type: type || 'person', createdAt: new Date().toISOString() });
-  }
+  const { name, phone, notes, type } = req.body;
+  clients.push({
+    id: Date.now(),
+    name,
+    phone: phone || '',
+    notes: notes || '',
+    type: type || 'person',
+    createdAt: new Date().toISOString()
+  });
   writeJSON('clients.json', clients);
   res.json({ success: true });
 });
 
+// API: обновить клиента (редактирование)
+app.put('/api/clients/:id', (req, res) => {
+  const clients = readJSON('clients.json');
+  const { name, phone, notes, type } = req.body;
+  const index = clients.findIndex(c => c.id === parseInt(req.params.id));
+  
+  if (index === -1) {
+    return res.status(404).json({ error: 'Client not found' });
+  }
+  
+  clients[index] = {
+    ...clients[index],
+    name: name || clients[index].name,
+    phone: phone || clients[index].phone,
+    notes: notes || clients[index].notes,
+    type: type || clients[index].type
+  };
+  
+  writeJSON('clients.json', clients);
+  res.json({ success: true });
+});
+
+// API: удалить клиента
 app.delete('/api/clients/:id', (req, res) => {
   const clients = readJSON('clients.json');
   const filtered = clients.filter(c => c.id !== parseInt(req.params.id));
   writeJSON('clients.json', filtered);
   res.json({ success: true });
 });
-
 // API: услуги
 app.get('/api/services', (req, res) => {
   res.json(readJSON('services.json'));
@@ -149,6 +175,7 @@ app.delete('/api/operations/:id', (req, res) => {
   const operations = readJSON('operations.json');
   const filtered = operations.filter(op => op.id !== parseInt(req.params.id));
   writeJSON('operations.json', filtered);
+  updateClientStatus(clientId);
   res.json({ success: true });
 });
 
@@ -234,5 +261,173 @@ app.get('/api/stats', (req, res) => {
   res.json({ totalIncome, topClients, reminders, aiAdvice, operationsCount: operations.length });
 });
 
+// ========== НОВЫЕ ФУНКЦИИ ДЛЯ СТАТУСОВ КЛИЕНТОВ ==========
+
+// Эндпоинт для смены статуса
+app.patch('/api/clients/:id/status', (req, res) => {
+  const clients = readJSON('clients.json');
+  const { status } = req.body;
+  const index = clients.findIndex(c => c.id === parseInt(req.params.id));
+  
+  if (index === -1) {
+    return res.status(404).json({ error: 'Client not found' });
+  }
+  
+  clients[index].status = status;
+  writeJSON('clients.json', clients);
+  res.json({ success: true });
+});
+
+// Функция автоматического обновления статуса
+async function updateClientStatus(clientId) {
+  const clients = readJSON('clients.json');
+  const operations = readJSON('operations.json');
+  const client = clients.find(c => c.id === clientId);
+  if (!client) return;
+  
+  const clientOps = operations.filter(op => op.clientId === clientId);
+  const now = new Date();
+  const lastOpDate = clientOps.length ? new Date(Math.max(...clientOps.map(op => new Date(op.date)))) : null;
+  const daysSinceLastOp = lastOpDate ? Math.floor((now - lastOpDate) / (1000 * 60 * 60 * 24)) : null;
+  
+  let newStatus = client.status || 'new';
+  
+  if (clientOps.length === 0) {
+    newStatus = 'new';
+  } else if (clientOps.length >= 3 && client.status !== 'regular') {
+    newStatus = 'regular';
+  }
+  
+  if (daysSinceLastOp !== null && daysSinceLastOp > 60 && newStatus !== 'departed') {
+    newStatus = 'departed';
+  }
+  
+  if (newStatus !== client.status) {
+    client.status = newStatus;
+    writeJSON('clients.json', clients);
+  }
+}
+
 const PORT = process.env.PORT || 3000;
+// API: обновить клиента (редактирование)
+app.put('/api/clients/:id', (req, res) => {
+  const clients = readJSON('clients.json');
+  const { name, phone, notes, type } = req.body;
+  const index = clients.findIndex(c => c.id === parseInt(req.params.id));
+  
+  if (index === -1) {
+    return res.status(404).json({ error: 'Client not found' });
+  }
+  
+  clients[index] = {
+    ...clients[index],
+    name: name || clients[index].name,
+    phone: phone || clients[index].phone,
+    notes: notes || clients[index].notes,
+    type: type || clients[index].type
+  };
+  
+  writeJSON('clients.json', clients);
+  res.json({ success: true });
+});
+// API: обновить услугу (редактирование)
+app.put('/api/services/:id', (req, res) => {
+  const services = readJSON('services.json');
+  const { name, price } = req.body;
+  const index = services.findIndex(s => s.id === parseInt(req.params.id));
+  
+  if (index === -1) {
+    return res.status(404).json({ error: 'Service not found' });
+  }
+  
+  services[index] = {
+    ...services[index],
+    name: name || services[index].name,
+    price: price || services[index].price
+  };
+  
+  writeJSON('services.json', services);
+  res.json({ success: true });
+});
+
+// API: обновить товар (редактирование)
+app.put('/api/products/:id', (req, res) => {
+  const products = readJSON('products.json');
+  const { name, price, stock } = req.body;
+  const index = products.findIndex(p => p.id === parseInt(req.params.id));
+  
+  if (index === -1) {
+    return res.status(404).json({ error: 'Product not found' });
+  }
+  
+  products[index] = {
+    ...products[index],
+    name: name || products[index].name,
+    price: price || products[index].price,
+    stock: stock !== undefined ? stock : products[index].stock
+  };
+  
+  writeJSON('products.json', products);
+  res.json({ success: true });
+});
+// Курсы валют (обновляются раз в час)
+let currencyRates = {
+  RUB: 1,
+  USD: 0,
+  EUR: 0,
+  BYN: 0,
+  lastUpdate: null
+};
+
+async function updateCurrencyRates() {
+  try {
+    // Бесплатное API от exchangerate-api.com (не требует ключа)
+    const response = await axios.get('https://api.exchangerate-api.com/v4/latest/RUB');
+    const rates = response.data.rates;
+    currencyRates = {
+      RUB: 1,
+      USD: rates.USD || 0.011,
+      EUR: rates.EUR || 0.010,
+      BYN: rates.BYN || 0.035,
+      lastUpdate: new Date().toISOString()
+    };
+    console.log('✅ Курсы валют обновлены:', currencyRates);
+  } catch (error) {
+    console.error('❌ Ошибка получения курсов валют:', error.message);
+    // Если API не работает, используем примерные курсы
+    currencyRates = {
+      RUB: 1,
+      USD: 0.011,
+      EUR: 0.010,
+      BYN: 0.035,
+      lastUpdate: new Date().toISOString()
+    };
+  }
+}
+
+// Обновляем курсы при старте
+updateCurrencyRates();
+// Обновляем каждый час
+setInterval(updateCurrencyRates, 60 * 60 * 1000);
+
+// API: получить курсы валют
+app.get('/api/currency/rates', (req, res) => {
+  res.json(currencyRates);
+});
+
+// Авто-пинг (будильник) — не даём Render усыпить приложение
+
+
+function pingSelf() {
+    const url = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+    axios.get(url).catch(err => console.log('⚠️ Пинг не удался:', err.message));
+}
+
+// Запускаем пинг через 30 секунд после старта
+setTimeout(() => {
+    pingSelf();
+    setInterval(pingSelf, 10 * 60 * 1000); // каждые 10 минут
+    console.log('✅ Авто-пинг запущен (каждые 10 минут)');
+}, 30000);
+
 app.listen(PORT, () => console.log(`✅ Profitly запущен на http://localhost:${PORT}`));

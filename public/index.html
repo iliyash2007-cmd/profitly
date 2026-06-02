@@ -28,6 +28,83 @@
             top: 0;
             z-index: 100;
         }
+input[type="text"] {
+    background-color: #2a2a30;
+    border: 1px solid #3a3a40;
+    color: #ededee;
+    border-radius: 10px;
+    padding: 12px;
+    font-family: 'Rubik', sans-serif;
+    font-size: 14px;
+}
+
+body.light input[type="text"] {
+    background-color: #ffffff;
+    border-color: #d4d8dd;
+    color: #1a1a2e;
+}
+
+/* Стили для календаря (date picker) */
+input[type="date"] {
+    background-color: #2a2a30;
+    border: 1px solid #3a3a40;
+    color: #ededee;
+    border-radius: 10px;
+    padding: 10px;
+    font-family: 'Rubik', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+body.light input[type="date"] {
+    background-color: #ffffff;
+    border: 1px solid #d4d8dd;
+    color: #1a1a2e;
+}
+
+/* Кнопки фильтра */
+.filter-btn {
+    background-color: transparent;
+    border: 1px solid #3a3a40;
+    color: #ededee;
+    border-radius: 10px;
+    padding: 10px;
+    font-family: 'Rubik', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+body.light .filter-btn {
+    border-color: #d4d8dd;
+    color: #1a1a2e;
+}
+
+.filter-btn.active {
+    background-color: #10b981;
+    border-color: #10b981;
+    color: white;
+}
+
+body.light .filter-btn.active {
+    background-color: #059669;
+    border-color: #059669;
+    color: white;
+}
+
+.filter-btn:hover:not(.active) {
+    background-color: rgba(16, 185, 129, 0.1);
+}
+.filter-btn.active {
+    background-color: #10b981;
+    border-color: #10b981;
+    color: white;
+}
+body.light .filter-btn.active {
+    background-color: #059669;
+    border-color: #059669;
+    color: white;
+}
         body.light .app-header {
             background-color: #ffffff;
             border-bottom-color: #d4d8dd;
@@ -130,7 +207,9 @@
         .modal-overlay.active { display: flex; }
         .modal-window {
             width: 90%;
-            max-width: 380px;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
             border-radius: 16px;
             padding: 24px;
             background-color: #1a1a20;
@@ -141,23 +220,30 @@
             border-color: #d4d8dd;
         }
         .modal-window h3 { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
-        .modal-window input {
+        .modal-window label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        .modal-window input, .modal-window textarea, .modal-window select {
             width: 100%;
             padding: 12px;
             border-radius: 10px;
             font-family: 'Rubik', sans-serif;
             font-size: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             background-color: #2a2a30;
             border: 1px solid #3a3a40;
             color: #ededee;
         }
-        body.light .modal-window input {
+        body.light .modal-window input, body.light .modal-window textarea, body.light .modal-window select {
             background-color: #ffffff;
             border-color: #d4d8dd;
             color: #1a1a2e;
         }
-        .modal-buttons { display: flex; gap: 12px; justify-content: flex-end; }
+        .modal-window textarea { resize: vertical; }
+        .modal-buttons { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
         .modal-buttons button { width: auto; padding: 10px 20px; margin-top: 0; }
         .btn-cancel {
             background: none;
@@ -208,7 +294,6 @@
             border-color: #d4d8dd;
             color: #1a1a2e;
         }
-        /* Кнопки в стиле приложения */
         .btn-primary {
             background-color: #10b981;
             color: white;
@@ -223,9 +308,7 @@
             margin-top: 8px;
             transition: opacity 0.2s;
         }
-        .btn-primary:hover {
-            opacity: 0.85;
-        }
+        .btn-primary:hover { opacity: 0.85; }
         .btn-secondary {
             background-color: transparent;
             border: 1px solid #10b981;
@@ -240,14 +323,12 @@
             margin-top: 8px;
             transition: background-color 0.2s;
         }
-        .btn-secondary:hover {
-            background-color: rgba(16, 185, 129, 0.1);
-        }
+        .btn-secondary:hover { background-color: rgba(16, 185, 129, 0.1); }
         .client-row, .service-row, .operation-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #2a2a30;
         }
         body.light .client-row, body.light .service-row, body.light .operation-row { border-bottom-color: #e0e4e8; }
@@ -274,6 +355,64 @@
         .badge-master { background-color: #10b98120; color: #10b981; }
         .badge-company { background-color: #3b82f620; color: #3b82f6; }
         .badge-warehouse { background-color: #f59e0b20; color: #f59e0b; }
+        .client-info {
+            flex: 1;
+        }
+        .client-phone, .client-notes {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+        .service-info {
+            flex: 1;
+        }
+        .service-price {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+.status-badge {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+.status-new { background-color: #3b82f6; }
+.status-negotiation { background-color: #f59e0b; }
+.status-regular { background-color: #10b981; }
+.status-inactive { background-color: #6b7280; }
+.status-departed { background-color: #ef4444; }
+
+.status-select {
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: 'Rubik', sans-serif;
+    cursor: pointer;
+    background-color: #2a2a30;
+    border: 1px solid #3a3a40;
+    color: #ededee;
+}
+body.light .status-select {
+    background-color: #ffffff;
+    border-color: #d4d8dd;
+    color: #1a1a2e;
+}
+
+.filter-status-btn.active {
+    background-color: #10b981;
+    border-color: #10b981;
+    color: white;
+}
+body.light .filter-status-btn.active {
+    background-color: #059669;
+}
     </style>
 </head>
 <body>
@@ -288,39 +427,42 @@
     <div class="main-content" id="mainContent"></div>
     <div class="bottom-nav" id="bottomNav"></div>
 
-    <div id="settingsModal" class="modal-overlay">
-        <div class="modal-window">
-            <h3>Настройки</h3>
-            <label>Профиль деятельности</label>
+    <!-- Настройки -->
+   <div id="settingsModal" class="modal-overlay">
+    <div class="modal-window">
+        <h3>Настройки</h3>
+        <div class="settings-section">
+            <h4>Профиль деятельности</h4>
             <select id="profileSelect" style="width:100%; margin-bottom:20px;">
                 <option value="master">Мастер / Самозанятый</option>
                 <option value="company">Компания / ИП</option>
                 <option value="warehouse">Склад / Производство</option>
             </select>
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeSettingsModal()">Отмена</button>
-                <button class="btn-confirm" onclick="saveProfile()">Применить</button>
-            </div>
+        </div>
+        <div class="settings-section">
+            <h4>Валюта</h4>
+            <select id="currencySelect" style="width:100%; margin-bottom:20px;">
+                <option value="RUB">₽ Российский рубль</option>
+                <option value="USD">$ Доллар США</option>
+                <option value="EUR">€ Евро</option>
+                <option value="BYN">Br Белорусский рубль</option>
+            </select>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="closeSettingsModal()">Отмена</button>
+            <button class="btn-confirm" onclick="saveSettings()">Применить</button>
         </div>
     </div>
+</div>
 
-    <div id="inputModal" class="modal-overlay">
+    <!-- Универсальное модальное окно -->
+    <div id="dynamicModal" class="modal-overlay">
         <div class="modal-window">
-            <h3 id="inputModalTitle">Введите значение</h3>
-            <input type="text" id="inputModalField" placeholder="">
+            <h3 id="dynamicModalTitle">Введите значение</h3>
+            <div id="dynamicModalBody"></div>
             <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeInputModal()">Отмена</button>
-                <button class="btn-confirm" onclick="confirmInputModal()">ОК</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="confirmModal" class="modal-overlay">
-        <div class="modal-window">
-            <h3 id="confirmModalTitle">Подтвердите действие</h3>
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeConfirmModal()">Нет</button>
-                <button class="btn-confirm" onclick="confirmYes()">Да</button>
+                <button class="btn-cancel" onclick="closeDynamicModal()">Отмена</button>
+                <button class="btn-confirm" onclick="confirmDynamicModal()">Подтвердить</button>
             </div>
         </div>
     </div>
@@ -332,8 +474,7 @@
         let currentTab = 'dashboard';
         let clients = [], services = [], operations = [], products = [], operationsCount = 0, totalOps = 0;
         
-        let inputModalResolve = null;
-        let confirmModalResolve = null;
+        let dynamicModalResolve = null;
 
         function showNotification(message, isError = false) {
             const container = document.getElementById('notificationContainer');
@@ -344,48 +485,31 @@
             setTimeout(() => notif.remove(), 2000);
         }
 
-        function customPrompt(title, placeholder = '') {
-            return new Promise((resolve) => {
-                inputModalResolve = resolve;
-                document.getElementById('inputModalTitle').textContent = title;
-                document.getElementById('inputModalField').value = '';
-                document.getElementById('inputModalField').placeholder = placeholder;
-                document.getElementById('inputModal').classList.add('active');
-                document.getElementById('inputModalField').focus();
+        function openModal(title, bodyHtml, callback) {
+            document.getElementById('dynamicModalTitle').textContent = title;
+            document.getElementById('dynamicModalBody').innerHTML = bodyHtml;
+            dynamicModalResolve = callback;
+            document.getElementById('dynamicModal').classList.add('active');
+        }
+
+        function closeDynamicModal() {
+            document.getElementById('dynamicModal').classList.remove('active');
+            dynamicModalResolve = null;
+        }
+
+        function confirmDynamicModal() {
+            if (dynamicModalResolve) dynamicModalResolve();
+            closeDynamicModal();
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
             });
-        }
-
-        function closeInputModal() {
-            document.getElementById('inputModal').classList.remove('active');
-            if (inputModalResolve) inputModalResolve(null);
-            inputModalResolve = null;
-        }
-
-        function confirmInputModal() {
-            const value = document.getElementById('inputModalField').value;
-            document.getElementById('inputModal').classList.remove('active');
-            if (inputModalResolve) inputModalResolve(value);
-            inputModalResolve = null;
-        }
-
-        function customConfirm(title) {
-            return new Promise((resolve) => {
-                confirmModalResolve = resolve;
-                document.getElementById('confirmModalTitle').textContent = title;
-                document.getElementById('confirmModal').classList.add('active');
-            });
-        }
-
-        function closeConfirmModal() {
-            document.getElementById('confirmModal').classList.remove('active');
-            if (confirmModalResolve) confirmModalResolve(false);
-            confirmModalResolve = null;
-        }
-
-        function confirmYes() {
-            document.getElementById('confirmModal').classList.remove('active');
-            if (confirmModalResolve) confirmModalResolve(true);
-            confirmModalResolve = null;
         }
 
         function updateProfileBadge() {
@@ -440,35 +564,88 @@
         }
 
         async function loadDashboard(container) {
-            await loadStats();
-            const stats = await fetch('/api/stats').then(r => r.json());
-            const remaining = 50 - totalOps;
-            const percent = (totalOps / 50) * 100;
-            container.innerHTML = `
-                <div class="card">
-                    <div class="income">${stats.totalIncome.toLocaleString()} ₽</div>
-                    <div>доход за месяц</div>
-                </div>
+    await loadStats();
+    const stats = await fetch('/api/stats').then(r => r.json());
+    const remaining = 50 - totalOps;
+    const percent = (totalOps / 50) * 100;
+    container.innerHTML = `
+        <div class="card">
+            <div class="income">${formatPrice(stats.totalIncome)}</div>
+            <div>доход за месяц</div>
+        </div>
                 <div class="card">
                     <div style="font-weight:600; margin-bottom:8px;">Осталось операций: ${remaining} / 50</div>
                     <div class="progress-bar"><div class="progress-fill" style="width: ${percent}%;"></div></div>
                     ${totalOps >= 45 ? '<div class="warning-text">⚠️ Лимит скоро закончится. Перейдите на Pro</div>' : ''}
                 </div>
                 <div class="card">
-                    <div style="font-weight:600; margin-bottom:12px;">Топ-10 клиентов</div>
-                    ${stats.topClients.map(c => `<div>${c.name}: ${c.total.toLocaleString()} ₽ (${c.percent.toFixed(1)}%)</div>`).join('') || 'Нет данных'}
+                    <div class="section-title">Топ-10 клиентов</div>
+                    ${stats.topClients.map(c => `<div><strong>${escapeHtml(c.name)}</strong>: ${c.total.toLocaleString()} ₽ (${c.percent.toFixed(1)}%)</div>`).join('') || 'Нет данных'}
                 </div>
                 <div class="card">
-                    <div style="font-weight:600; margin-bottom:12px;">Напоминания</div>
-                    ${stats.reminders.map(r => `<div>⚠️ ${r.name} не был ${r.days} дней</div>`).join('') || 'Все активны'}
+                    <div class="section-title">Напоминания</div>
+                    ${stats.reminders.map(r => `<div>⚠️ ${escapeHtml(r.name)} не был ${r.days} дней</div>`).join('') || 'Все активны'}
                 </div>
                 <div class="card">
-                    <div style="font-weight:600; margin-bottom:12px;">Совет нейросети</div>
+                    <div class="section-title">Совет нейросети</div>
                     <div>${stats.aiAdvice}</div>
                     <div class="ai-note">📌 Как работает совет: анализируем время всех операций, находим 2-часовой интервал с наименьшей загрузкой и рекомендуем запустить скидку для новых клиентов.</div>
                 </div>
             `;
         }
+
+async function loadProductsList(container) {
+    await loadProductsData();
+    
+    let searchTerm = '';
+    
+    function filterProducts() {
+        if (!searchTerm) return products;
+        const term = searchTerm.toLowerCase();
+        return products.filter(p => p.name.toLowerCase().includes(term));
+    }
+    
+    function renderProductsList() {
+        const filtered = filterProducts();
+        const listContainer = document.getElementById('productsListContainer');
+        if (listContainer) {
+            if (filtered.length === 0) {
+                listContainer.innerHTML = '<div style="text-align:center; padding:20px;">🔍 Товары не найдены</div>';
+            } else {
+                listContainer.innerHTML = filtered.map(p => `
+                    <div class="service-row">
+                        <div class="service-info">
+                            <div><strong>${escapeHtml(p.name)}</strong></div>
+                            <div class="service-price">💰 ${formatPrice(p.price)}</div>
+                            ${p.stock !== undefined ? `<div class="service-price">📦 Остаток: ${p.stock} шт.</div>` : ''}
+                        </div>
+                        <div>
+                            <button class="edit-btn" onclick="editProduct(${p.id})">✎</button>
+                            <button class="delete-btn" onclick="deleteProduct(${p.id})">✕</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+    }
+    
+    container.innerHTML = `
+        <div class="card">
+            <div class="section-title">Товары</div>
+            <input type="text" id="productSearchInput" placeholder="🔍 Поиск по названию..." style="width:100%; padding: 12px; border-radius: 10px; font-family: 'Rubik', sans-serif; font-size: 14px; margin-bottom: 16px;">
+            <div id="productsListContainer"></div>
+            <button class="btn-primary" onclick="openNewProductModal()" style="margin-top: 16px;">Новый товар</button>
+        </div>
+    `;
+    
+    const searchInput = document.getElementById('productSearchInput');
+    searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value;
+        renderProductsList();
+    });
+    
+    renderProductsList();
+}
 
         async function loadAddForm(container) {
             await loadClientsData();
@@ -478,7 +655,7 @@
                 itemsHtml = `
                     <select id="itemSelectAdd">
                         <option value="">-- Выберите услугу --</option>
-                        ${services.map(s => `<option value="${s.id}" data-price="${s.price}">${s.name} - ${s.price} ₽</option>`).join('')}
+                        ${services.map(s => `<option value="${s.id}" data-price="${s.price}">${escapeHtml(s.name)} - ${formatPrice(s.price)}</option>`).join('')}
                     </select>
                     <button class="btn-secondary" onclick="openNewServiceModal()">Новая услуга</button>
                 `;
@@ -487,17 +664,17 @@
                 itemsHtml = `
                     <select id="itemSelectAdd">
                         <option value="">-- Выберите товар --</option>
-                        ${products.map(p => `<option value="${p.id}" data-price="${p.price}">${p.name} - ${p.price} ₽</option>`).join('')}
+                        ${products.map(p => `<option value="${p.id}" data-price="${p.price}">${escapeHtml(p.name)} - ${p.price} ₽</option>`).join('')}
                     </select>
                     <button class="btn-secondary" onclick="openNewProductModal()">Новый товар</button>
                 `;
             }
             container.innerHTML = `
                 <div class="card">
-                    <div style="font-weight:600; margin-bottom:12px;">Новая операция</div>
+                    <div class="section-title">Новая операция</div>
                     <select id="clientSelectAdd">
                         <option value="">-- Выберите клиента --</option>
-                        ${clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                        ${clients.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('')}
                     </select>
                     <button class="btn-secondary" onclick="openNewClientModal()">Новый клиент</button>
                     ${itemsHtml}
@@ -507,41 +684,350 @@
         }
 
         async function loadClientsList(container) {
-            await loadClientsData();
-            container.innerHTML = `<div class="card"><div style="font-weight:600;">Клиенты</div>${clients.map(c => `<div class="client-row"><span>${c.name} (${c.type === 'company' ? 'Компания' : 'Физ. лицо'})</span><button class="delete-btn" onclick="deleteClient(${c.id})">✕</button></div>`).join('')}<button class="btn-primary" onclick="openNewClientModal()">Новый клиент</button></div>`;
+    await loadClientsData();
+    
+    let searchTerm = '';
+    let statusFilter = 'all';
+    
+    function filterClients() {
+        let filtered = clients;
+        if (searchTerm) {
+            const term = searchTerm.toLowerCase();
+            filtered = filtered.filter(c => 
+                c.name.toLowerCase().includes(term) ||
+                (c.phone && c.phone.toLowerCase().includes(term)) ||
+                (c.notes && c.notes.toLowerCase().includes(term))
+            );
         }
+        if (statusFilter !== 'all') {
+            filtered = filtered.filter(c => c.status === statusFilter);
+        }
+        return filtered;
+    }
+    
+    function renderClientsList() {
+        const filtered = filterClients();
+        const listContainer = document.getElementById('clientsListContainer');
+        if (listContainer) {
+            if (filtered.length === 0) {
+                listContainer.innerHTML = '<div style="text-align:center; padding:20px;">🔍 Клиенты не найдены</div>';
+            } else {
+                listContainer.innerHTML = filtered.map(c => `
+                    <div class="client-row">
+                        <div class="client-info" style="flex:2;">
+                            <div>
+                                <span class="status-badge status-${c.status || 'new'}"></span>
+                                <strong>${escapeHtml(c.name)}</strong> (${c.type === 'company' ? 'Компания' : 'Физ. лицо'})
+                            </div>
+                            <div class="status-label" style="font-size: 11px; margin-top: 4px;">${getStatusLabel(c.status || 'new')}</div>
+                            ${c.phone ? `<div class="client-phone">📞 ${escapeHtml(c.phone)}</div>` : ''}
+                            ${c.notes ? `<div class="client-notes">📝 ${escapeHtml(c.notes.substring(0, 50))}${c.notes.length > 50 ? '...' : ''}</div>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 4px;">
+                            <select class="status-select" data-id="${c.id}" data-status="${c.status || 'new'}">
+                                <option value="new" ${(c.status || 'new') === 'new' ? 'selected' : ''}>🆕 Новый</option>
+                                <option value="negotiation" ${c.status === 'negotiation' ? 'selected' : ''}>💬 В переговорах</option>
+                                <option value="regular" ${c.status === 'regular' ? 'selected' : ''}>⭐ Постоянный</option>
+                                <option value="inactive" ${c.status === 'inactive' ? 'selected' : ''}>💤 Неактивный</option>
+                                <option value="departed" ${c.status === 'departed' ? 'selected' : ''}>❌ Ушедший</option>
+                            </select>
+                            <button class="edit-btn" onclick="editClient(${c.id})">✎</button>
+                            <button class="delete-btn" onclick="deleteClient(${c.id})">✕</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        document.querySelectorAll('.status-select').forEach(select => {
+            select.onchange = async (e) => {
+                const clientId = parseInt(select.dataset.id);
+                const newStatus = select.value;
+                await fetch(`/api/clients/${clientId}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                await loadClientsData();
+                renderClientsList();
+                showNotification('Статус обновлён');
+            };
+        });
+    }
+    
+    container.innerHTML = `
+        <div class="card">
+            <div class="section-title">Клиенты</div>
+            <input type="text" id="clientSearchInput" placeholder="🔍 Поиск по имени, телефону, заметкам..." style="width:100%; padding: 12px; border-radius: 10px; margin-bottom: 16px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+                <button class="filter-status-btn btn-secondary" data-status="all" style="flex:1; margin:0;">Все</button>
+                <button class="filter-status-btn btn-secondary" data-status="new" style="flex:1; margin:0;">🆕 Новые</button>
+                <button class="filter-status-btn btn-secondary" data-status="negotiation" style="flex:1; margin:0;">💬 Переговоры</button>
+                <button class="filter-status-btn btn-secondary" data-status="regular" style="flex:1; margin:0;">⭐ Постоянные</button>
+                <button class="filter-status-btn btn-secondary" data-status="inactive" style="flex:1; margin:0;">💤 Неактивные</button>
+                <button class="filter-status-btn btn-secondary" data-status="departed" style="flex:1; margin:0;">❌ Ушедшие</button>
+            </div>
+            <div id="clientsListContainer"></div>
+            <button class="btn-primary" onclick="openNewClientModal()" style="margin-top: 16px;">Новый клиент</button>
+        </div>
+    `;
+    
+    const searchInput = document.getElementById('clientSearchInput');
+    searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value;
+        renderClientsList();
+    });
+    
+    document.querySelectorAll('.filter-status-btn').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.filter-status-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            statusFilter = btn.dataset.status;
+            renderClientsList();
+        };
+    });
+    
+    renderClientsList();
+}
 
         async function loadServicesList(container) {
-            await loadServicesData();
-            container.innerHTML = `<div class="card"><div style="font-weight:600;">Услуги</div>${services.map(s => `<div class="service-row"><span>${s.name} - ${s.price} ₽</span><button class="delete-btn" onclick="deleteService(${s.id})">✕</button></div>`).join('')}<button class="btn-primary" onclick="openNewServiceModal()">Новая услуга</button></div>`;
+    await loadServicesData();
+    
+    let searchTerm = '';
+    
+    function filterServices() {
+        if (!searchTerm) return services;
+        const term = searchTerm.toLowerCase();
+        return services.filter(s => s.name.toLowerCase().includes(term));
+    }
+    
+    function renderServicesList() {
+        const filtered = filterServices();
+        const listContainer = document.getElementById('servicesListContainer');
+        if (listContainer) {
+            if (filtered.length === 0) {
+                listContainer.innerHTML = '<div style="text-align:center; padding:20px;">🔍 Услуги не найдены</div>';
+            } else {
+                listContainer.innerHTML = filtered.map(s => `
+                    <div class="service-row">
+                        <div class="service-info">
+                            <div><strong>${escapeHtml(s.name)}</strong></div>
+                            <div class="service-price">💰 ${formatPrice(s.price)}</div>
+                        </div>
+                        <div>
+                            <button class="edit-btn" onclick="editService(${s.id})">✎</button>
+                            <button class="delete-btn" onclick="deleteService(${s.id})">✕</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
         }
-
-        async function loadProductsList(container) {
-            await loadProductsData();
-            container.innerHTML = `<div class="card"><div style="font-weight:600;">Товары</div>${products.map(p => `<div class="service-row"><span>${p.name} - ${p.price} ₽</span><button class="delete-btn" onclick="deleteProduct(${p.id})">✕</button></div>`).join('')}<button class="btn-primary" onclick="openNewProductModal()">Новый товар</button></div>`;
-        }
+    }
+    
+    container.innerHTML = `
+        <div class="card">
+            <div class="section-title">Услуги</div>
+            <input type="text" id="serviceSearchInput" placeholder="🔍 Поиск по названию..." style="width:100%; padding: 12px; border-radius: 10px; font-family: 'Rubik', sans-serif; font-size: 14px; margin-bottom: 16px;">
+            <div id="servicesListContainer"></div>
+            <button class="btn-primary" onclick="openNewServiceModal()" style="margin-top: 16px;">Новая услуга</button>
+        </div>
+    `;
+    
+    const searchInput = document.getElementById('serviceSearchInput');
+    searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value;
+        renderServicesList();
+    });
+    
+    renderServicesList();
+}
 
         async function loadOperationsList(container) {
-            await loadOperationsData();
-            const remaining = 50 - totalOps;
-            const percent = (totalOps / 50) * 100;
-            const sorted = [...operations].sort((a, b) => new Date(b.date) - new Date(a.date));
-            container.innerHTML = `
-                <div class="card">
-                    <div style="font-weight:600; margin-bottom:8px;">Осталось операций: ${remaining} / 50</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: ${percent}%;"></div></div>
-                    ${totalOps >= 45 ? '<div class="warning-text">⚠️ Лимит скоро закончится</div>' : ''}
+    await loadOperationsData();
+    await loadStats();
+    
+    // Состояние фильтра
+    let filterType = 'all'; // all, today, yesterday, week, month, custom
+    let customStart = null;
+    let customEnd = null;
+    
+    // Функция фильтрации
+    function filterOperations() {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        
+        let weekStart = new Date(today);
+        const day = weekStart.getDay();
+        weekStart.setDate(today.getDate() - (day === 0 ? 6 : day - 1));
+        
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        
+        return operations.filter(op => {
+            const opDate = new Date(op.date);
+            
+            switch (filterType) {
+                case 'today':
+                    return opDate >= today;
+                case 'yesterday':
+                    return opDate >= yesterday && opDate < today;
+                case 'week':
+                    return opDate >= weekStart;
+                case 'month':
+                    return opDate >= monthStart;
+                case 'custom':
+                    if (customStart && opDate < customStart) return false;
+                    if (customEnd && opDate > customEnd) return false;
+                    return true;
+                default:
+                    return true;
+            }
+        });
+    }
+    
+    // Подсчёт суммы за период
+    function getFilteredTotal(filteredOps) {
+        return filteredOps.reduce((sum, op) => sum + op.amount, 0);
+    }
+    
+    // Рендер списка
+    function renderFilteredList() {
+        const filtered = filterOperations();
+        const total = getFilteredTotal(filtered);
+        const sorted = [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        const filteredContainer = document.getElementById('filteredOperationsList');
+        if (filteredContainer) {
+            filteredContainer.innerHTML = sorted.map(op => `
+                <div class="operation-row">
+                    <div>
+                        <div><strong>${escapeHtml(op.clientName)}</strong> — ${escapeHtml(op.serviceName || op.productName)}</div>
+                        <div>💰 ${formatPrice(op.amount)}</div>
+                        <div class="operation-date">📅 ${new Date(op.date).toLocaleDateString()}</div>
+                    </div>
+                    <div>
+                        <button class="edit-btn" onclick="editOperation(${op.id})">✎</button>
+                        <button class="delete-btn" onclick="deleteOperation(${op.id})">✕</button>
+                    </div>
                 </div>
-                <div class="card">
-                    <div style="font-weight:600; margin-bottom:12px;">История операций</div>
-                    ${sorted.map(op => `<div class="operation-row"><div><strong>${op.clientName}</strong> — ${op.serviceName || op.productName}<div>${op.amount.toLocaleString()} ₽</div><div class="operation-date">${new Date(op.date).toLocaleDateString()}</div></div><div><button class="edit-btn" onclick="editOperation(${op.id})">✎</button><button class="delete-btn" onclick="deleteOperation(${op.id})">✕</button></div></div>`).join('') || 'Нет операций'}
-                </div>
-            `;
+            `).join('') || '<div style="text-align:center; padding:20px;">Нет операций за выбранный период</div>';
         }
+        
+        const totalElement = document.getElementById('filteredTotal');
+        if (totalElement) {
+            totalElement.innerHTML = `💰 ${formatPrice(total)}`;
+        }
+    }
+    
+    // Установка фильтра и обновление
+    function setFilter(type, start = null, end = null) {
+        filterType = type;
+        customStart = start;
+        customEnd = end;
+        
+        // Обновляем активный класс кнопок
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.filter === type) btn.classList.add('active');
+        });
+        
+        renderFilteredList();
+    }
+    
+    // Рендер интерфейса
+    const remaining = 50 - totalOps;
+    const percent = (totalOps / 50) * 100;
+    
+    container.innerHTML = `
+        <div class="card">
+            <div style="font-weight:600; margin-bottom:8px;">Осталось операций: ${remaining} / 50</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: ${percent}%;"></div></div>
+            ${totalOps >= 45 ? '<div class="warning-text">⚠️ Лимит скоро закончится</div>' : ''}
+        </div>
+        
+        <div class="card">
+            <div class="section-title">Фильтр по дате</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+                <button class="filter-btn" data-filter="all" style="flex:1; margin:0;">Все</button>
+                <button class="filter-btn" data-filter="today" style="flex:1; margin:0;">Сегодня</button>
+                <button class="filter-btn" data-filter="yesterday" style="flex:1; margin:0;">Вчера</button>
+                <button class="filter-btn" data-filter="week" style="flex:1; margin:0;">Эта неделя</button>
+                <button class="filter-btn" data-filter="month" style="flex:1; margin:0;">Этот месяц</button>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: flex-end;">
+                <div style="flex:1;">
+                    <label style="font-size: 12px; opacity: 0.7; margin-bottom: 4px; display: block;">С</label>
+                    <input type="date" id="customStartDate" style="width:100%; padding: 10px; border-radius: 10px; font-family: 'Rubik', sans-serif; font-size: 14px; background-color: #2a2a30; border: 1px solid #3a3a40; color: #ededee;">
+                </div>
+                <div style="flex:1;">
+                    <label style="font-size: 12px; opacity: 0.7; margin-bottom: 4px; display: block;">По</label>
+                    <input type="date" id="customEndDate" style="width:100%; padding: 10px; border-radius: 10px; font-family: 'Rubik', sans-serif; font-size: 14px; background-color: #2a2a30; border: 1px solid #3a3a40; color: #ededee;">
+                </div>
+                <button id="applyCustomBtn" class="btn-secondary" style="flex:0; margin:0; padding: 10px 20px;">Применить</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="section-title" style="margin-bottom:0;">История операций</div>
+                <div style="font-size: 18px; font-weight: 700; color: #10b981;" id="filteredTotal">0 ₽</div>
+            </div>
+            <div id="filteredOperationsList"></div>
+        </div>
+    `;
+    
+    // Навешиваем обработчики
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.onclick = () => setFilter(btn.dataset.filter);
+    });
+    
+    document.getElementById('applyCustomBtn').onclick = () => {
+        const startDate = document.getElementById('customStartDate').value;
+        const endDate = document.getElementById('customEndDate').value;
+        setFilter('custom', startDate ? new Date(startDate) : null, endDate ? new Date(endDate + 'T23:59:59') : null);
+    };
+    
+    // Применяем стили к календарям под текущую тему
+    function updateCalendarStyles() {
+        const isLight = document.body.classList.contains('light');
+        const startInput = document.getElementById('customStartDate');
+        const endInput = document.getElementById('customEndDate');
+        if (startInput) {
+            startInput.style.backgroundColor = isLight ? '#ffffff' : '#2a2a30';
+            startInput.style.borderColor = isLight ? '#d4d8dd' : '#3a3a40';
+            startInput.style.color = isLight ? '#1a1a2e' : '#ededee';
+        }
+        if (endInput) {
+            endInput.style.backgroundColor = isLight ? '#ffffff' : '#2a2a30';
+            endInput.style.borderColor = isLight ? '#d4d8dd' : '#3a3a40';
+            endInput.style.color = isLight ? '#1a1a2e' : '#ededee';
+        }
+    }
+    
+    // Следим за сменой темы
+    const observer = new MutationObserver(() => updateCalendarStyles());
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    
+    // Загружаем курсы валют и рендерим
+    if (typeof loadCurrencyRates === 'function') await loadCurrencyRates();
+    updateCalendarStyles();
+    setFilter('all');
+}
 
         async function loadInventory(container) {
             await loadProductsData();
-            container.innerHTML = `<div class="card"><div style="font-weight:600;">Остатки на складе</div>${products.map(p => `<div class="client-row"><span>${p.name}</span><span>${p.stock || 0} шт.</span></div>`).join('')}</div>`;
+            container.innerHTML = `
+                <div class="card">
+                    <div class="section-title">Остатки на складе</div>
+                    ${products.map(p => `
+                        <div class="client-row">
+                            <div><strong>${escapeHtml(p.name)}</strong></div>
+                            <div>${p.stock || 0} шт.</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
         }
 
         async function loadStats() { const res = await fetch('/api/stats'); const d = await res.json(); totalOps = d.operationsCount; }
@@ -573,24 +1059,419 @@
             switchTab('dashboard');
         }
 
-        async function deleteClient(id) { if (await customConfirm('Удалить клиента?')) { await fetch(`/api/clients/${id}`, { method: 'DELETE' }); loadCurrentTab(); showNotification('Клиент удалён'); } }
-        async function deleteService(id) { if (await customConfirm('Удалить услугу?')) { await fetch(`/api/services/${id}`, { method: 'DELETE' }); loadCurrentTab(); showNotification('Услуга удалена'); } }
-        async function deleteProduct(id) { if (await customConfirm('Удалить товар?')) { await fetch(`/api/products/${id}`, { method: 'DELETE' }); loadCurrentTab(); showNotification('Товар удалён'); } }
-        async function deleteOperation(id) { if (await customConfirm('Удалить операцию?')) { await fetch(`/api/operations/${id}`, { method: 'DELETE' }); loadCurrentTab(); showNotification('Операция удалена'); } }
-        async function editOperation(id) { const op = operations.find(o => o.id === id); if (!op) return; const newAmount = await customPrompt('Новая сумма:', op.amount.toString()); if (newAmount && !isNaN(parseInt(newAmount))) { await fetch(`/api/operations/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...op, amount: parseInt(newAmount) }) }); loadCurrentTab(); showNotification('Операция обновлена'); } }
+        async function deleteClient(id) {
+            if (confirm('Удалить клиента?')) {
+                await fetch(`/api/clients/${id}`, { method: 'DELETE' });
+                await loadClientsData();
+                loadCurrentTab();
+                showNotification('Клиент удалён');
+            }
+        }
 
-        async function openNewClientModal() { const name = await customPrompt('Имя клиента'); if (!name) return; const isCompany = await customConfirm('Это компания?'); const type = isCompany ? 'company' : 'person'; await fetch('/api/clients', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, type }) }); loadCurrentTab(); showNotification('Клиент добавлен'); }
-        async function openNewServiceModal() { const name = await customPrompt('Название услуги'); if (!name) return; const priceStr = await customPrompt('Цена (в рублях)'); const price = parseInt(priceStr); if (isNaN(price)) { showNotification('Некорректная цена', true); return; } await fetch('/api/services', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, price }) }); loadCurrentTab(); showNotification('Услуга добавлена'); }
-        async function openNewProductModal() { const name = await customPrompt('Название товара'); if (!name) return; const priceStr = await customPrompt('Цена (в рублях)'); const price = parseInt(priceStr); if (isNaN(price)) { showNotification('Некорректная цена', true); return; } await fetch('/api/products', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, price, stock: 0 }) }); loadCurrentTab(); showNotification('Товар добавлен'); }
+        async function deleteService(id) {
+            if (confirm('Удалить услугу?')) {
+                await fetch(`/api/services/${id}`, { method: 'DELETE' });
+                await loadServicesData();
+                loadCurrentTab();
+                showNotification('Услуга удалена');
+            }
+        }
 
-        function openSettingsModal() { document.getElementById('settingsModal').classList.add('active'); loadSettingsToModal(); }
-        function closeSettingsModal() { document.getElementById('settingsModal').classList.remove('active'); }
-        async function loadSettingsToModal() { const res = await fetch('/api/settings'); const s = await res.json(); document.getElementById('profileSelect').value = s.role || 'master'; }
-        async function saveProfile() { const profile = document.getElementById('profileSelect').value; await fetch('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role: profile }) }); currentProfile = profile; updateProfileBadge(); closeSettingsModal(); renderBottomNav(); await loadCurrentTab(); showNotification('Профиль изменён'); }
+        async function deleteProduct(id) {
+            if (confirm('Удалить товар?')) {
+                await fetch(`/api/products/${id}`, { method: 'DELETE' });
+                await loadProductsData();
+                loadCurrentTab();
+                showNotification('Товар удалён');
+            }
+        }
 
-        function toggleTheme() { const isLight = document.body.classList.contains('light'); if (isLight) { document.body.classList.remove('light'); localStorage.setItem('theme', 'dark'); document.getElementById('themeToggleBtn').textContent = '🌙'; } else { document.body.classList.add('light'); localStorage.setItem('theme', 'light'); document.getElementById('themeToggleBtn').textContent = '☀️'; } fetch('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ theme: localStorage.getItem('theme') }) }).catch(console.error); }
+        async function deleteOperation(id) {
+            if (confirm('Удалить операцию?')) {
+                await fetch(`/api/operations/${id}`, { method: 'DELETE' });
+                await loadOperationsData();
+                await loadStats();
+                loadCurrentTab();
+                showNotification('Операция удалена');
+            }
+        }
 
-        async function init() { const savedTheme = localStorage.getItem('theme'); if (savedTheme === 'light') { document.body.classList.add('light'); document.getElementById('themeToggleBtn').textContent = '☀️'; } const res = await fetch('/api/settings'); const s = await res.json(); currentProfile = s.role || 'master'; updateProfileBadge(); renderBottomNav(); await loadCurrentTab(); }
+        async function editOperation(id) {
+            const op = operations.find(o => o.id === id);
+            if (!op) return;
+            const html = `
+                <label>Сумма (₽)</label>
+                <input type="number" id="editAmount" value="${op.amount}" style="margin-bottom:16px;">
+            `;
+            openModal('Редактировать операцию', html, async () => {
+                const newAmount = parseInt(document.getElementById('editAmount').value);
+                if (isNaN(newAmount)) {
+                    showNotification('Введите корректную сумму', true);
+                    return;
+                }
+                await fetch(`/api/operations/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ...op, amount: newAmount })
+                });
+                await loadOperationsData();
+                await loadStats();
+                loadCurrentTab();
+                showNotification('Операция обновлена');
+            });
+        }
+
+       async function editClient(id) {
+    const client = clients.find(c => c.id === id);
+    if (!client) return;
+    
+    const html = `
+        <label>Имя</label>
+        <input type="text" id="editClientName" value="${escapeHtml(client.name)}">
+        <label>Телефон</label>
+        <input type="text" id="editClientPhone" value="${escapeHtml(client.phone || '')}">
+        <label>Примечания</label>
+        <textarea id="editClientNotes" rows="3">${escapeHtml(client.notes || '')}</textarea>
+        <label>Тип</label>
+        <select id="editClientType">
+            <option value="person" ${client.type === 'person' ? 'selected' : ''}>Физ. лицо</option>
+            <option value="company" ${client.type === 'company' ? 'selected' : ''}>Компания / ИП</option>
+        </select>
+        <label>Статус</label>
+        <select id="editClientStatus">
+            <option value="new" ${client.status === 'new' ? 'selected' : ''}>🆕 Новый</option>
+            <option value="negotiation" ${client.status === 'negotiation' ? 'selected' : ''}>💬 В переговорах</option>
+            <option value="regular" ${client.status === 'regular' ? 'selected' : ''}>⭐ Постоянный</option>
+            <option value="inactive" ${client.status === 'inactive' ? 'selected' : ''}>💤 Неактивный</option>
+            <option value="departed" ${client.status === 'departed' ? 'selected' : ''}>❌ Ушедший</option>
+        </select>
+    `;
+    
+    openModal('Редактировать клиента', html, async () => {
+        const name = document.getElementById('editClientName').value;
+        const phone = document.getElementById('editClientPhone').value;
+        const notes = document.getElementById('editClientNotes').value;
+        const type = document.getElementById('editClientType').value;
+        const status = document.getElementById('editClientStatus').value;
+        
+        if (!name) {
+            showNotification('Имя обязательно', true);
+            return;
+        }
+        
+        await fetch(`/api/clients/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, phone, notes, type, status })
+        });
+        
+        await loadClientsData();
+        loadCurrentTab();
+        showNotification('Клиент обновлён');
+    });
+}
+
+        async function editService(id) {
+            const service = services.find(s => s.id === id);
+            if (!service) return;
+            
+            const html = `
+                <label>Название услуги</label>
+                <input type="text" id="editServiceName" value="${escapeHtml(service.name)}">
+                <label>Цена (₽)</label>
+                <input type="number" id="editServicePrice" value="${service.price}">
+            `;
+            
+            openModal('Редактировать услугу', html, async () => {
+                const name = document.getElementById('editServiceName').value;
+                const price = parseInt(document.getElementById('editServicePrice').value);
+                
+                if (!name) {
+                    showNotification('Введите название', true);
+                    return;
+                }
+                if (isNaN(price)) {
+                    showNotification('Введите цену', true);
+                    return;
+                }
+                
+                await fetch(`/api/services/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, price })
+                });
+                
+                await loadServicesData();
+                loadCurrentTab();
+                showNotification('Услуга обновлена');
+            });
+        }
+
+        async function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            
+            const html = `
+                <label>Название товара</label>
+                <input type="text" id="editProductName" value="${escapeHtml(product.name)}">
+                <label>Цена (₽)</label>
+                <input type="number" id="editProductPrice" value="${product.price}">
+                <label>Остаток на складе (шт.)</label>
+                <input type="number" id="editProductStock" value="${product.stock || 0}">
+            `;
+            
+            openModal('Редактировать товар', html, async () => {
+                const name = document.getElementById('editProductName').value;
+                const price = parseInt(document.getElementById('editProductPrice').value);
+                const stock = parseInt(document.getElementById('editProductStock').value);
+                
+                if (!name) {
+                    showNotification('Введите название', true);
+                    return;
+                }
+                if (isNaN(price)) {
+                    showNotification('Введите цену', true);
+                    return;
+                }
+                if (isNaN(stock)) {
+                    showNotification('Введите остаток', true);
+                    return;
+                }
+                
+                await fetch(`/api/products/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, price, stock })
+                });
+                
+                await loadProductsData();
+                loadCurrentTab();
+                showNotification('Товар обновлён');
+            });
+        }
+
+        function openNewClientModal() {
+            const html = `
+                <label>Имя</label>
+                <input type="text" id="newClientName" placeholder="Введите имя">
+                <label>Телефон</label>
+                <input type="text" id="newClientPhone" placeholder="+7 XXX XXX-XX-XX">
+                <label>Примечания</label>
+                <textarea id="newClientNotes" rows="2" placeholder="Дополнительная информация"></textarea>
+                <label>Тип</label>
+                <select id="newClientType">
+                    <option value="person">Физ. лицо</option>
+                    <option value="company">Компания / ИП</option>
+                </select>
+            `;
+            
+            openModal('Новый клиент', html, async () => {
+                const name = document.getElementById('newClientName').value;
+                const phone = document.getElementById('newClientPhone').value;
+                const notes = document.getElementById('newClientNotes').value;
+                const type = document.getElementById('newClientType').value;
+                
+                if (!name) {
+                    showNotification('Введите имя', true);
+                    return;
+                }
+                
+                await fetch('/api/clients', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone, notes, type })
+                });
+                
+                await loadClientsData();
+                loadCurrentTab();
+                showNotification('Клиент добавлен');
+            });
+        }
+
+        function openNewServiceModal() {
+            const html = `
+                <label>Название услуги</label>
+                <input type="text" id="newServiceName" placeholder="Например: Маникюр">
+                <label>Цена (₽)</label>
+                <input type="number" id="newServicePrice" placeholder="3000">
+            `;
+            openModal('Новая услуга', html, async () => {
+                const name = document.getElementById('newServiceName').value;
+                const price = parseInt(document.getElementById('newServicePrice').value);
+                if (!name) { showNotification('Введите название', true); return; }
+                if (isNaN(price)) { showNotification('Введите цену', true); return; }
+                await fetch('/api/services', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, price })
+                });
+                await loadServicesData();
+                loadCurrentTab();
+                showNotification('Услуга добавлена');
+            });
+        }
+
+        function openNewProductModal() {
+            const html = `
+                <label>Название товара</label>
+                <input type="text" id="newProductName" placeholder="Например: Фильтр масляный">
+                <label>Цена (₽)</label>
+                <input type="number" id="newProductPrice" placeholder="450">
+                <label>Остаток на складе (шт.)</label>
+                <input type="number" id="newProductStock" placeholder="0" value="0">
+            `;
+            openModal('Новый товар', html, async () => {
+                const name = document.getElementById('newProductName').value;
+                const price = parseInt(document.getElementById('newProductPrice').value);
+                const stock = parseInt(document.getElementById('newProductStock').value) || 0;
+                if (!name) { showNotification('Введите название', true); return; }
+                if (isNaN(price)) { showNotification('Введите цену', true); return; }
+                await fetch('/api/products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, price, stock })
+                });
+                await loadProductsData();
+                loadCurrentTab();
+                showNotification('Товар добавлен');
+            });
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settingsModal').classList.add('active');
+            loadSettingsToModal();
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        async function loadSettingsToModal() {
+            const res = await fetch('/api/settings');
+            const s = await res.json();
+            document.getElementById('profileSelect').value = s.role || 'master';
+        }
+
+        async function saveProfile() {
+            const profile = document.getElementById('profileSelect').value;
+            await fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ role: profile })
+            });
+            currentProfile = profile;
+            updateProfileBadge();
+            closeSettingsModal();
+            renderBottomNav();
+            await loadCurrentTab();
+            showNotification('Профиль изменён');
+        }
+// Текущая валюта и курс
+let currentCurrency = 'RUB';
+let currencyRates = { RUB: 1, USD: 0, EUR: 0, BYN: 0 };
+
+// Загрузка курсов валют
+async function loadCurrencyRates() {
+    try {
+        const res = await fetch('/api/currency/rates');
+        const data = await res.json();
+        currencyRates = data;
+    } catch (error) {
+        console.error('Ошибка загрузки курсов:', error);
+    }
+}
+
+// Конвертация цены в выбранную валюту
+function convertPrice(priceInRUB) {
+    const rate = currencyRates[currentCurrency];
+    if (!rate || rate === 0) return priceInRUB;
+    return Math.round(priceInRUB * rate);
+}
+
+// Форматирование цены с символом валюты
+function formatPrice(priceInRUB) {
+    const converted = convertPrice(priceInRUB);
+    const symbols = { RUB: '₽', USD: '$', EUR: '€', BYN: 'Br' };
+    return `${converted.toLocaleString()} ${symbols[currentCurrency]}`;
+}
+
+// Сохранение настроек (профиль + валюта)
+async function saveSettings() {
+    const profile = document.getElementById('profileSelect').value;
+    const currency = document.getElementById('currencySelect').value;
+    
+    await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: profile, currency: currency })
+    });
+    
+    currentProfile = profile;
+    currentCurrency = currency;
+    localStorage.setItem('currency', currency);
+    updateProfileBadge();
+    closeSettingsModal();
+    renderBottomNav();
+    await loadCurrentTab(); // Перезагружаем все цены
+    showNotification('Настройки сохранены');
+}
+
+// Обновлённая функция загрузки настроек в модальное окно
+async function loadSettingsToModal() {
+    const res = await fetch('/api/settings');
+    const s = await res.json();
+    document.getElementById('profileSelect').value = s.role || 'master';
+    document.getElementById('currencySelect').value = s.currency || 'RUB';
+}
+
+        function toggleTheme() {
+            const isLight = document.body.classList.contains('light');
+            if (isLight) {
+                document.body.classList.remove('light');
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('themeToggleBtn').textContent = '🌙';
+            } else {
+                document.body.classList.add('light');
+                localStorage.setItem('theme', 'light');
+                document.getElementById('themeToggleBtn').textContent = '☀️';
+            }
+            fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ theme: localStorage.getItem('theme') })
+            }).catch(console.error);
+        }
+
+        async function init() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light');
+        document.getElementById('themeToggleBtn').textContent = '☀️';
+    }
+    
+    // Загружаем курсы валют
+    await loadCurrencyRates();
+    
+    const res = await fetch('/api/settings');
+    const s = await res.json();
+    currentProfile = s.role || 'master';
+    currentCurrency = s.currency || 'RUB';
+    updateProfileBadge();
+    renderBottomNav();
+    await loadCurrentTab();
+}
+
+function getStatusLabel(status) {
+    const labels = {
+        'new': '🆕 Новый',
+        'negotiation': '💬 В переговорах',
+        'regular': '⭐ Постоянный',
+        'inactive': '💤 Неактивный',
+        'departed': '❌ Ушедший'
+    };
+    return labels[status] || '🆕 Новый';
+}
+
         init();
     </script>
 </body>

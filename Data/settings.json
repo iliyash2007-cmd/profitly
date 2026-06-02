@@ -1,5 +1,6 @@
 {
   "role": "master",
   "theme": "dark",
-  "firstLogin": false
+  "firstLogin": false,
+  "currency": "BYN"
 }
