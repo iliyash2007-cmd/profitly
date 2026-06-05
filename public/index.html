@@ -1525,7 +1525,7 @@
         });
 
         // График дохода по дням
-        let incomeChartInstance = null;
+                let incomeChartInstance = null;
         function drawIncomeChart(dailyData) {
             const ctx = document.getElementById('incomeChart')?.getContext('2d');
             if (!ctx) return;
@@ -1533,6 +1533,18 @@
             
             const days = dailyData.map(d => d.day);
             const values = dailyData.map(d => convertPrice(d.total));
+            
+            // Проверка: есть ли хоть какие-то данные
+            const hasData = values.some(v => v > 0);
+            
+            if (!hasData) {
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                ctx.fillStyle = '#888';
+                ctx.font = '14px Rubik';
+                ctx.textAlign = 'center';
+                ctx.fillText('📊 Добавьте операции для анализа', ctx.canvas.width / 2, ctx.canvas.height / 2);
+                return;
+            }
             
             incomeChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -1558,7 +1570,10 @@
                         tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toLocaleString()} ${getCurrencySymbol()}` } }
                     },
                     scales: {
-                        y: { beginAtZero: true, ticks: { callback: (val) => val.toLocaleString() } }
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { callback: (val) => val.toLocaleString() }
+                        }
                     }
                 }
             });
@@ -1572,13 +1587,14 @@
             if (pieChartInstance) pieChartInstance.destroy();
             
             if (topClients.length === 0) {
-                ctx.fillStyle = '#666';
-                ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                ctx.fillStyle = '#fff';
-                ctx.font = '14px Rubik';
-                ctx.fillText('Нет данных', 10, 50);
-                return;
-            }
+    // Прозрачный фон вместо серого
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.fillStyle = '#888';
+    ctx.font = '14px Rubik';
+    ctx.textAlign = 'center';
+    ctx.fillText('📊 Добавьте операции', ctx.canvas.width / 2, ctx.canvas.height / 2);
+    return;
+}
             
             pieChartInstance = new Chart(ctx, {
                 type: 'pie',
@@ -1603,13 +1619,25 @@
         
         // Гистограмма по дням недели
         let barChartInstance = null;
-        function drawBarChart(weekdayData) {
+                function drawBarChart(weekdayData) {
             const ctx = document.getElementById('weekdayBarChart')?.getContext('2d');
             if (!ctx) return;
             if (barChartInstance) barChartInstance.destroy();
             
             const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
             const values = weekdays.map(day => convertPrice(weekdayData[day] || 0));
+            
+            // Проверка: есть ли хоть какие-то данные
+            const hasData = values.some(v => v > 0);
+            
+            if (!hasData) {
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                ctx.fillStyle = '#888';
+                ctx.font = '14px Rubik';
+                ctx.textAlign = 'center';
+                ctx.fillText('📊 Нет данных за период', ctx.canvas.width / 2, ctx.canvas.height / 2);
+                return;
+            }
             
             barChartInstance = new Chart(ctx, {
                 type: 'bar',
@@ -1630,7 +1658,10 @@
                         tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toLocaleString()} ${getCurrencySymbol()}` } }
                     },
                     scales: {
-                        y: { beginAtZero: true, ticks: { callback: (val) => val.toLocaleString() } }
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { callback: (val) => val.toLocaleString() }
+                        }
                     }
                 }
             });
