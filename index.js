@@ -52,6 +52,61 @@ app.get('/api/clients', (req, res) => {
   res.json(readJSON('clients.json'));
 });
 
+// ========== ДОПОЛНИТЕЛЬНЫЕ API ДЛЯ КЛИЕНТОВ ==========
+
+// Создание нового клиента
+app.post('/api/clients', (req, res) => {
+  const clients = readJSON('clients.json');
+  const { name, phone, notes, type, status } = req.body;
+  
+  const newClient = {
+    id: Date.now(),
+    name: name || '',
+    phone: phone || '',
+    notes: notes || '',
+    type: type || 'person',
+    status: status || 'Новый',
+    createdAt: new Date().toISOString()
+  };
+  
+  clients.push(newClient);
+  writeJSON('clients.json', clients);
+  res.json({ success: true, client: newClient });
+});
+
+// Обновление клиента
+app.put('/api/clients/:id', (req, res) => {
+  const clients = readJSON('clients.json');
+  const { name, phone, notes, type, status } = req.body;
+  const id = parseInt(req.params.id);
+  const index = clients.findIndex(c => c.id === id);
+  
+  if (index === -1) {
+    return res.status(404).json({ error: 'Client not found' });
+  }
+  
+  clients[index] = {
+    ...clients[index],
+    name: name !== undefined ? name : clients[index].name,
+    phone: phone !== undefined ? phone : clients[index].phone,
+    notes: notes !== undefined ? notes : clients[index].notes,
+    type: type !== undefined ? type : clients[index].type,
+    status: status !== undefined ? status : clients[index].status
+  };
+  
+  writeJSON('clients.json', clients);
+  res.json({ success: true });
+});
+
+// Удаление клиента
+app.delete('/api/clients/:id', (req, res) => {
+  const clients = readJSON('clients.json');
+  const id = parseInt(req.params.id);
+  const filtered = clients.filter(c => c.id !== id);
+  writeJSON('clients.json', filtered);
+  res.json({ success: true });
+});
+
 // API: добавить нового клиента
 app.post('/api/clients', (req, res) => {
   const clients = readJSON('clients.json');
@@ -70,24 +125,25 @@ app.post('/api/clients', (req, res) => {
 
 // API: обновить клиента (редактирование)
 app.put('/api/clients/:id', (req, res) => {
-  const clients = readJSON('clients.json');
-  const { name, phone, notes, type } = req.body;
-  const index = clients.findIndex(c => c.id === parseInt(req.params.id));
-  
-  if (index === -1) {
-    return res.status(404).json({ error: 'Client not found' });
-  }
-  
-  clients[index] = {
-    ...clients[index],
-    name: name || clients[index].name,
-    phone: phone || clients[index].phone,
-    notes: notes || clients[index].notes,
-    type: type || clients[index].type
-  };
-  
-  writeJSON('clients.json', clients);
-  res.json({ success: true });
+    const clients = readJSON('clients.json');
+    const { name, phone, notes, type, status } = req.body;
+    const index = clients.findIndex(c => c.id === parseInt(req.params.id));
+    
+    if (index === -1) {
+        return res.status(404).json({ error: 'Client not found' });
+    }
+    
+    clients[index] = {
+        ...clients[index],
+        name: name !== undefined ? name : clients[index].name,
+        phone: phone !== undefined ? phone : clients[index].phone,
+        notes: notes !== undefined ? notes : clients[index].notes,
+        type: type !== undefined ? type : clients[index].type,
+        status: status !== undefined ? status : clients[index].status
+    };
+    
+    writeJSON('clients.json', clients);
+    res.json({ success: true });
 });
 
 // API: удалить клиента
@@ -429,5 +485,86 @@ setTimeout(() => {
     setInterval(pingSelf, 10 * 60 * 1000); // каждые 10 минут
     console.log('✅ Авто-пинг запущен (каждые 10 минут)');
 }, 30000);
+
+// API: данные для графиков
+app.get('/api/charts', (req, res) => {
+    const operations = readJSON('operations.json');
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+    
+    // 1. Доход по дням текущего месяца
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const dailyIncome = {};
+    for (let i = 1; i <= daysInMonth; i++) {
+        dailyIncome[i] = 0;
+    }
+    
+    const weekdayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+    const weekdayIncome = { 'Пн': 0, 'Вт': 0, 'Ср': 0, 'Чт': 0, 'Пт': 0, 'Сб': 0, 'Вс': 0 };
+    
+    operations.forEach(op => {
+        const date = new Date(op.date);
+        if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+            const day = date.getDate();
+            dailyIncome[day] = (dailyIncome[day] || 0) + op.amount;
+        }
+        
+        // Для гистограммы по дням недели (все операции)
+        const weekdayIndex = date.getDay();
+        const weekdayMap = { 1: 'Пн', 2: 'Вт', 3: 'Ср', 4: 'Чт', 5: 'Пт', 6: 'Сб', 0: 'Вс' };
+        const weekday = weekdayMap[weekdayIndex];
+        if (weekday) {
+            weekdayIncome[weekday] = (weekdayIncome[weekday] || 0) + op.amount;
+        }
+    });
+    
+    const dailyIncomeArray = Object.entries(dailyIncome).map(([day, total]) => ({ day: parseInt(day), total }));
+    dailyIncomeArray.sort((a, b) => a.day - b.day);
+    
+    // Топ-5 клиентов
+    const clientTotals = {};
+    operations.forEach(op => {
+        clientTotals[op.clientName] = (clientTotals[op.clientName] || 0) + op.amount;
+    });
+    const topClients = Object.entries(clientTotals)
+        .map(([name, total]) => ({ name, total }))
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 5);
+    
+    res.json({
+        dailyIncome: dailyIncomeArray,
+        weekdayIncome: weekdayIncome,
+        topClients: topClients
+    });
+});
+
+// API: получить все статусы
+app.get('/api/statuses', (req, res) => {
+    const statuses = readJSON('statuses.json');
+    res.json(statuses);
+});
+
+// API: добавить/обновить статус
+app.post('/api/statuses', (req, res) => {
+    const statuses = readJSON('statuses.json');
+    const { id, name, color } = req.body;
+    if (id) {
+        const index = statuses.findIndex(s => s.id === id);
+        if (index !== -1) statuses[index] = { ...statuses[index], name, color };
+    } else {
+        statuses.push({ id: Date.now(), name, color: color || '#10b981' });
+    }
+    writeJSON('statuses.json', statuses);
+    res.json({ success: true });
+});
+
+// API: удалить статус
+app.delete('/api/statuses/:id', (req, res) => {
+    const statuses = readJSON('statuses.json');
+    const filtered = statuses.filter(s => s.id !== parseInt(req.params.id));
+    writeJSON('statuses.json', filtered);
+    res.json({ success: true });
+});
 
 app.listen(PORT, () => console.log(`✅ Profitly запущен на http://localhost:${PORT}`));
