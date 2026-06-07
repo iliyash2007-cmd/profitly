@@ -632,7 +632,6 @@ app.post('/api/import/products', upload.single('file'), (req, res) => {
 const botToken = '8893186724:AAEMzCAgE5_wnILqEpC3gFAyMS_z7WxtwSk';
 const botUrl = 'https://profitly-uyyb.onrender.com';
 
-// Эндпоинт для обработки команд от Telegram
 app.post('/webhook', express.json(), async (req, res) => {
     console.log('📩 Получен запрос:', JSON.stringify(req.body));
     
@@ -641,8 +640,8 @@ app.post('/webhook', express.json(), async (req, res) => {
         const chatId = message.chat.id;
         console.log(`👤 Пользователь ${chatId} отправил /start`);
         
-        // ПРАВИЛЬНАЯ ССЫЛКА
-        const webAppUrl = 'https://t.me/Profiitlybot/Profitly';
+        // Используем прямой URL на Render
+        const webAppUrl = 'https://profitly-uyyb.onrender.com';
         
         const inlineKeyboard = {
             inline_keyboard: [[
@@ -664,7 +663,6 @@ app.post('/webhook', express.json(), async (req, res) => {
     res.sendStatus(200);
 });
 
-// Установка webhook
 async function setWebhook() {
     const webhookUrl = `${botUrl}/webhook`;
     try {
