@@ -2,5 +2,6 @@
   "role": "master",
   "theme": "dark",
   "firstLogin": false,
-  "currency": "USD"
+  "currency": "USD",
+  "userId": "dev_1780848557204"
 }

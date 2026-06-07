@@ -50,13 +50,16 @@
             color: #1a1a2e;
         }
         .logo {
-            font-size: 28px;
+            font-size: 40px;
             font-weight: 700;
             letter-spacing: -0.5px;
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         body.light .logo {
             background: linear-gradient(135deg, #059669 0%, #047857 100%);
@@ -447,12 +450,225 @@
             border-top: 1px solid #2a2a30;
         }
         body.light .ai-note { border-top-color: #e0e4e8; }
+
+        /* Плавающая кнопка быстрой сделки */
+        .quick-add-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #10b981;
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 150;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .quick-add-btn:hover {
+            background-color: #059669;
+            transform: scale(1.05);
+        }
+        body.light .quick-add-btn {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Модальное окно быстрой сделки */
+        #quickAddModal {
+            z-index: 1001;
+        }
+        
+        #quickAddModal .modal-window {
+            z-index: 1002;
+        }
+        
+        /* Универсальное модальное окно */
+        #dynamicModal {
+            z-index: 1003;
+        }
+        
+        #dynamicModal .modal-window {
+            z-index: 1004;
+        }
+		
+		/* Выпадающее меню экспорта */
+        .export-dropdown {
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            background-color: #1a1a20;
+            min-width: 200px;
+            border-radius: 12px;
+            border: 1px solid #2a2a30;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: none;
+        }
+        body.light .export-dropdown {
+            background-color: #ffffff;
+            border-color: #d4d8dd;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .export-dropdown.show {
+            display: block;
+        }
+        .export-dropdown button {
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            color: #ededee;
+            cursor: pointer;
+            font-family: 'Rubik', sans-serif;
+            font-size: 14px;
+            margin: 0;
+            border-radius: 0;
+        }
+        body.light .export-dropdown button {
+            color: #1a1a2e;
+        }
+        .export-dropdown button:hover {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+        .export-dropdown button:first-child {
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .export-dropdown button:last-child {
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+		
+		/* Вкладки для экспорта/импорта */
+        .tab-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #8b8c9e;
+        }
+        .tab-btn.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+        body.light .tab-btn.active {
+            color: #059669;
+            border-bottom-color: #059669;
+        }
+        
+         /* Фиксированная высота для модального окна экспорта/импорта */
+        #importExportModal .modal-window {
+            min-height: 450px;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+        .tab-panel {
+            flex: 1;
+            overflow-y: auto;
+        }
+		
+		/* Канбан-доска (воронка) */
+        .kanban-board {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 16px;
+        }
+        .kanban-column {
+            min-width: 280px;
+            width: 280px;
+            background-color: #1a1a20;
+            border-radius: 12px;
+            border: 1px solid #2a2a30;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 180px);
+        }
+        body.light .kanban-column {
+            background-color: #fafbfd;
+            border-color: #d4d8dd;
+        }
+        .kanban-header {
+            padding: 16px;
+            border-bottom: 1px solid #2a2a30;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        body.light .kanban-header {
+            border-bottom-color: #e0e4e8;
+        }
+        .kanban-header .total {
+            font-size: 14px;
+            color: #10b981;
+        }
+        .kanban-cards {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            min-height: 200px;
+        }
+        .kanban-card {
+            background-color: #2a2a30;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            cursor: grab;
+            transition: all 0.2s;
+            border: 1px solid #3a3a40;
+        }
+        body.light .kanban-card {
+            background-color: #ffffff;
+            border-color: #e4e4e8;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .kanban-card:active {
+            cursor: grabbing;
+        }
+        .kanban-card.dragging {
+            opacity: 0.5;
+        }
+        .kanban-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .kanban-card-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .kanban-card-amount {
+            font-size: 14px;
+            color: #10b981;
+        }
+        .kanban-card-phone {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-top: 6px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
+
+    <!-- ========== ШАПКА ========== -->
     <div class="app-header">
-        <button class="menu-toggle" id="menuToggleBtn">☰</button>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <button class="menu-toggle" id="menuToggleBtn">☰</button>
+            <button id="importExportBtn" class="icon-btn">📎</button>
+        </div>
         <div class="logo">Profitly <span id="profileBadge" class="badge badge-master"></span></div>
         <div class="header-actions">
             <button class="icon-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙</button>
@@ -460,7 +676,7 @@
         </div>
     </div>
 
-    <!-- Боковое меню -->
+    <!-- ========== БОКОВОЕ МЕНЮ ========== -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-item" data-tab="dashboard">
@@ -483,14 +699,60 @@
             <span class="sidebar-icon">📋</span>
             <span>Операции</span>
         </div>
+        <div class="sidebar-item" data-tab="kanban">
+            <span class="sidebar-icon">🎯</span>
+            <span>Воронка</span>
+        </div>
         <div class="sidebar-item" data-tab="settings">
             <span class="sidebar-icon">⚙️</span>
             <span>Настройки</span>
         </div>
     </div>
 
+    <!-- ========== ОСНОВНОЙ КОНТЕНТ ========== -->
     <div class="main-content" id="mainContent"></div>
 
+    <!-- Модальное окно (шторка) для экспорта/импорта -->
+    <div id="importExportModal" class="modal-overlay">
+        <div class="modal-window" id="importExportModalWindow" style="max-width: 500px; padding: 20px;">
+            <div style="display: flex; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid #2a2a30;">
+                <button id="exportTabBtn" class="tab-btn active" style="background: none; border: none; font-size: 18px; font-weight: 600; padding: 8px 16px; cursor: pointer;">📎 Экспорт</button>
+                <button id="importTabBtn" class="tab-btn" style="background: none; border: none; font-size: 18px; font-weight: 600; padding: 8px 16px; cursor: pointer;">📥 Импорт</button>
+            </div>
+            
+            <div id="exportPanel" class="tab-panel" style="display: block;">
+                <div style="margin-bottom: 12px; font-size: 14px; color: #8b8c9e;">CSV (быстро)</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 20px;">
+                    <button class="btn-secondary" onclick="exportToCSV('clients'); closeImportExportModal();">👥 Клиенты</button>
+                    <button class="btn-secondary" onclick="exportToCSV('services'); closeImportExportModal();">💅 Услуги</button>
+                    <button class="btn-secondary" onclick="exportToCSV('products'); closeImportExportModal();">📦 Товары</button>
+                    <button class="btn-secondary" onclick="exportToCSV('operations'); closeImportExportModal();">📋 Операции</button>
+                </div>
+                <div style="margin-bottom: 12px; font-size: 14px; color: #8b8c9e;">Excel (с форматированием)</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 20px;">
+                    <button class="btn-secondary" onclick="exportToExcel('clients'); closeImportExportModal();">👥 Клиенты</button>
+                    <button class="btn-secondary" onclick="exportToExcel('services'); closeImportExportModal();">💅 Услуги</button>
+                    <button class="btn-secondary" onclick="exportToExcel('products'); closeImportExportModal();">📦 Товары</button>
+                    <button class="btn-secondary" onclick="exportToExcel('operations'); closeImportExportModal();">📋 Операции</button>
+                </div>
+            </div>
+            
+            <div id="importPanel" class="tab-panel" style="display: none;">
+                <div style="margin-bottom: 12px; font-size: 14px; color: #8b8c9e;">Импорт данных</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 20px;">
+                    <button class="btn-secondary" onclick="importFile('clients'); closeImportExportModal();">👥 Клиенты</button>
+                    <button class="btn-secondary" onclick="importFile('services'); closeImportExportModal();">💅 Услуги</button>
+                    <button class="btn-secondary" onclick="importFile('products'); closeImportExportModal();">📦 Товары</button>
+                </div>
+            </div>
+            
+            <div class="modal-buttons" style="margin-top: 16px;">
+                <button class="btn-cancel" onclick="closeImportExportModal()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== МОДАЛЬНЫЕ ОКНА ========== -->
     <!-- Настройки -->
     <div id="settingsModal" class="modal-overlay">
         <div class="modal-window">
@@ -512,7 +774,7 @@
                     <option value="BYN">Br Белорусский рубль</option>
                 </select>
             </div>
-			            <div class="settings-section">
+            <div class="settings-section">
                 <h4>Статусы клиентов</h4>
                 <div id="statusesList"></div>
                 <button class="btn-secondary" onclick="openNewStatusModal()" style="margin-top: 8px;">+ Добавить статус</button>
@@ -536,14 +798,76 @@
         </div>
     </div>
 
+    <!-- Контейнер уведомлений -->
     <div id="notificationContainer"></div>
 
+    <!-- ========== БЫСТРАЯ СДЕЛКА ========== -->
+    <!-- Плавающая кнопка -->
+    <button id="quickAddBtn" class="quick-add-btn">+</button>
+
+    <!-- Модальное окно быстрой сделки -->
+    <div id="quickAddModal" class="modal-overlay">
+        <div class="modal-window" style="max-width: 550px; padding: 28px;">
+            <h3 style="font-size: 22px; margin-bottom: 24px;">⚡ Быстрая сделка</h3>
+            <div id="quickAddBody">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Клиент</label>
+                <select id="quickClientSelect" style="width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; margin-bottom: 16px;">
+                    <option value="">-- Загрузка --</option>
+                </select>
+                <button class="btn-secondary" id="quickNewClientBtn" style="width: 100%; padding: 14px; margin-bottom: 20px; font-size: 15px;">➕ Новый клиент</button>
+                
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Услуга / Товар</label>
+                <select id="quickItemSelect" style="width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; margin-bottom: 16px;">
+                    <option value="">-- Загрузка --</option>
+                </select>
+                <button class="btn-secondary" id="quickNewItemBtn" style="width: 100%; padding: 14px; margin-bottom: 20px; font-size: 15px;">➕ Новая услуга</button>
+                
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;" id="quickAmountLabel">Сумма (₽)</label>
+                <input type="number" id="quickAmount" placeholder="Сумма" style="width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; margin-bottom: 24px;">
+            </div>
+            <div class="modal-buttons" style="display: flex; gap: 16px; margin-top: 8px;">
+                <button class="btn-cancel" id="quickCancelBtn" style="flex: 1; padding: 14px; font-size: 16px;">Отмена</button>
+                <button class="btn-confirm" id="quickSaveBtn" style="flex: 1; padding: 14px; font-size: 16px;">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // ========== ПОЛУЧЕНИЕ TELEGRAM ID ==========
+        let tgUserId = null;
+        
+        function getTelegramUserId() {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                return window.Telegram.WebApp.initDataUnsafe.user.id.toString();
+            }
+            let localId = localStorage.getItem('dev_user_id');
+            if (!localId) {
+                localId = 'dev_' + Date.now();
+                localStorage.setItem('dev_user_id', localId);
+            }
+            return localId;
+        }
+        
+        tgUserId = getTelegramUserId();
+        console.log('Profitly: User ID =', tgUserId);
+        
         let currentProfile = 'master';
         let currentTab = 'dashboard';
         let clients = [], services = [], operations = [], products = [], operationsCount = 0, totalOps = 0;
         
         let dynamicModalResolve = null;
+        let quickModalWasOpen = false;
+        let currentCurrency = 'RUB';
+        let currencyRates = { RUB: 1, USD: 0, EUR: 0, BYN: 0 };
+        
+        function updateQuickAmountLabel() {
+            const label = document.getElementById('quickAmountLabel');
+            if (label) {
+                const symbols = { RUB: '₽', USD: '$', EUR: '€', BYN: 'Br' };
+                const symbol = symbols[currentCurrency] || '₽';
+                label.textContent = `Сумма (${symbol})`;
+            }
+        }
 
         function showNotification(message, isError = false) {
             const container = document.getElementById('notificationContainer');
@@ -555,6 +879,11 @@
         }
 
         function openModal(title, bodyHtml, callback) {
+            const quickModal = document.getElementById('quickAddModal');
+            quickModalWasOpen = quickModal && quickModal.classList.contains('active');
+            if (quickModalWasOpen) {
+                quickModal.classList.remove('active');
+            }
             document.getElementById('dynamicModalTitle').textContent = title;
             document.getElementById('dynamicModalBody').innerHTML = bodyHtml;
             dynamicModalResolve = callback;
@@ -564,6 +893,16 @@
         function closeDynamicModal() {
             document.getElementById('dynamicModal').classList.remove('active');
             dynamicModalResolve = null;
+            if (quickModalWasOpen) {
+                const quickModal = document.getElementById('quickAddModal');
+                if (quickModal) {
+                    quickModal.classList.add('active');
+                    if (typeof updateQuickSelects === 'function') {
+                        updateQuickSelects();
+                    }
+                }
+                quickModalWasOpen = false;
+            }
         }
 
         function confirmDynamicModal() {
@@ -588,28 +927,13 @@
             badge.className = `badge badge-${currentProfile}`;
         }
 
-        function getNavItems() {
-            const common = [
-                { id: 'dashboard', icon: '🏠', label: 'Дашборд' },
-                { id: 'add', icon: '➕', label: 'Добавить' },
-                { id: 'clients', icon: '👥', label: 'Клиенты' }
-            ];
-            const profileItems = {
-                master: [{ id: 'services', icon: '💅', label: 'Услуги' }, { id: 'operations', icon: '📋', label: 'Операции' }],
-                company: [{ id: 'products', icon: '📦', label: 'Товары' }, { id: 'operations', icon: '📋', label: 'Продажи' }],
-                warehouse: [{ id: 'products', icon: '📦', label: 'Товары' }, { id: 'inventory', icon: '🏪', label: 'Склад' }, { id: 'operations', icon: '📋', label: 'Операции' }]
-            };
-            return [...common, ...(profileItems[currentProfile] || [])];
-        }
-
-                function switchTab(tabId) {
+        function switchTab(tabId) {
             currentTab = tabId;
             if (tabId === 'settings') {
                 openSettingsModal();
                 return;
             }
             loadCurrentTab();
-            // Обновляем активный пункт в боковом меню
             document.querySelectorAll('.sidebar-item').forEach(item => {
                 if (item.dataset.tab === tabId) {
                     item.classList.add('active');
@@ -629,18 +953,18 @@
                 case 'products': await loadProductsList(container); break;
                 case 'operations': await loadOperationsList(container); break;
                 case 'inventory': await loadInventory(container); break;
+                case 'kanban': await loadKanban(container); break;
                 default: await loadDashboard(container);
             }
         }
 
-                async function loadDashboard(container) {
+        async function loadDashboard(container) {
             await loadStats();
-            const stats = await fetch('/api/stats').then(r => r.json());
+            await loadClientsData();
+            
+            const stats = await fetch(`/api/stats?userId=${tgUserId}`).then(r => r.json());
             const remaining = 50 - totalOps;
             const percent = (totalOps / 50) * 100;
-            
-            // Получаем данные для графиков
-            const chartData = await fetch('/api/charts').then(r => r.json());
             
             container.innerHTML = `
                 <div class="card">
@@ -653,20 +977,56 @@
                     ${totalOps >= 45 ? '<div class="warning-text">⚠️ Лимит скоро закончится. Перейдите на Pro</div>' : ''}
                 </div>
                 
-                <!-- График дохода по дням -->
                 <div class="card">
-                    <div class="section-title">📈 Доход по дням (текущий месяц)</div>
+                    <div class="section-title">📊 Настройка графиков</div>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+                        <select id="chartTypeSelect" style="flex:1;">
+                            <option value="line">📈 Линейный</option>
+                            <option value="bar">📊 Столбчатый</option>
+                            <option value="area">📉 С областями</option>
+                        </select>
+                        <select id="chartPeriodSelect" style="flex:1;">
+                            <option value="month">📅 Текущий месяц</option>
+                            <option value="quarter">📅 Текущий квартал</option>
+                            <option value="year">📅 Текущий год</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="font-weight: 500;">👥 Выберите клиентов</span>
+                            <div style="display: flex; gap: 8px;">
+                                <button type="button" id="selectAllClientsBtn" class="btn-secondary" style="width: auto; padding: 6px 12px; margin: 0;">✅ Все</button>
+                                <button type="button" id="deselectAllClientsBtn" class="btn-secondary" style="width: auto; padding: 6px 12px; margin: 0;">❌ Снять всех</button>
+                            </div>
+                        </div>
+                        <div id="clientsChecklist" style="max-height: 180px; overflow-y: auto; border: 1px solid #2a2a30; border-radius: 10px; padding: 10px; background-color: #1a1a20;">
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 0; cursor: pointer;">
+                                <input type="checkbox" id="client_all" value="all" checked> <strong>📋 Все клиенты</strong>
+                            </label>
+                            ${clients.map(c => `
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 6px 0; cursor: pointer;">
+                                    <input type="checkbox" class="client-checkbox" value="${c.id}" data-name="${escapeHtml(c.name)}"> 
+                                    <span>👤 ${escapeHtml(c.name)}</span>
+                                    <span style="font-size: 11px; opacity: 0.6;">(${c.type === 'company' ? 'Компания' : 'Физ. лицо'})</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <button id="updateChartBtn" class="btn-primary" style="margin-top: 0;">🔄 Применить фильтр</button>
+                </div>
+                
+                <div class="card">
+                    <div class="section-title">📈 Доход по дням</div>
                     <canvas id="incomeChart" style="width:100%; max-height: 250px;"></canvas>
                 </div>
                 
                 <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                    <!-- Круговая диаграмма топ-клиентов -->
                     <div class="card" style="flex: 1;">
                         <div class="section-title">🥧 Топ-5 клиентов</div>
                         <canvas id="clientsPieChart" style="width:100%; max-height: 250px;"></canvas>
                     </div>
-                    
-                    <!-- Гистограмма по дням недели -->
                     <div class="card" style="flex: 1;">
                         <div class="section-title">📊 Доход по дням недели</div>
                         <canvas id="weekdayBarChart" style="width:100%; max-height: 250px;"></canvas>
@@ -684,15 +1044,82 @@
                 <div class="card">
                     <div class="section-title">🧠 Совет нейросети</div>
                     <div>${stats.aiAdvice}</div>
-                    <div class="ai-note">📌 Анализируем время операций, находим 2-часовой интервал с наименьшей загрузкой и рекомендуем запустить скидку для новых клиентов.</div>
+                    <div class="ai-note">📌 Анализируем время операций, находим 2-часовой интервал с наименьшей загрузкой.</div>
                 </div>
             `;
             
-            // Рисуем графики после того, как они появились в DOM
-            setTimeout(() => {
-                drawIncomeChart(chartData.dailyIncome);
+            const chartTypeSelect = document.getElementById('chartTypeSelect');
+            const chartPeriodSelect = document.getElementById('chartPeriodSelect');
+            const updateBtn = document.getElementById('updateChartBtn');
+            
+            const allCheckbox = document.getElementById('client_all');
+            const clientCheckboxes = document.querySelectorAll('.client-checkbox');
+            
+            function getSelectedClients() {
+                const selected = [];
+                if (allCheckbox && allCheckbox.checked) {
+                    return selected;
+                }
+                clientCheckboxes.forEach(cb => {
+                    if (cb.checked) {
+                        selected.push({ id: cb.value, name: cb.dataset.name });
+                    }
+                });
+                return selected;
+            }
+            
+            document.getElementById('selectAllClientsBtn')?.addEventListener('click', () => {
+                clientCheckboxes.forEach(cb => cb.checked = true);
+                if (allCheckbox) allCheckbox.checked = false;
+            });
+            
+            document.getElementById('deselectAllClientsBtn')?.addEventListener('click', () => {
+                clientCheckboxes.forEach(cb => cb.checked = false);
+                if (allCheckbox) allCheckbox.checked = false;
+            });
+            
+            if (allCheckbox) {
+                allCheckbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        clientCheckboxes.forEach(cb => cb.checked = false);
+                    }
+                });
+            }
+            
+            clientCheckboxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    if (allCheckbox && allCheckbox.checked) {
+                        allCheckbox.checked = false;
+                    }
+                });
+            });
+            
+            async function updateCharts() {
+                const chartType = chartTypeSelect.value;
+                const period = chartPeriodSelect.value;
+                const selectedClients = getSelectedClients();
+                const clientNames = selectedClients.map(c => c.name);
+                
+                let url = `/api/charts?period=${period}&userId=${tgUserId}`;
+                if (clientNames.length > 0 && !document.getElementById('client_all')?.checked) {
+                    url += `&clientNames=${encodeURIComponent(clientNames.join(','))}`;
+                }
+                
+                const chartData = await fetch(url).then(r => r.json());
+                drawIncomeChart(chartData.dailyIncome, chartType);
                 drawPieChart(chartData.topClients);
                 drawBarChart(chartData.weekdayIncome);
+                
+                showNotification(`Графики обновлены (${selectedClients.length} клиентов)`);
+            }
+            
+            if (updateBtn) updateBtn.onclick = updateCharts;
+            
+            setTimeout(async () => {
+                const initialData = await fetch(`/api/charts?period=month&userId=${tgUserId}`).then(r => r.json());
+                drawIncomeChart(initialData.dailyIncome, 'line');
+                drawPieChart(initialData.topClients);
+                drawBarChart(initialData.weekdayIncome);
             }, 100);
         }
 
@@ -732,7 +1159,7 @@
             `;
         }
 
-                async function loadClientsList(container) {
+        async function loadClientsList(container) {
             await loadClientsData();
             
             let searchTerm = '';
@@ -800,7 +1227,6 @@
                 });
             }
             
-            // Генерируем кнопки фильтров из кастомных статусов
             const filterButtonsHtml = `
                 <button class="filter-status-btn btn-secondary" data-status="all" style="flex:1; margin:0;">Все</button>
                 ${statuses.map(s => `<button class="filter-status-btn btn-secondary" data-status="${s.name}" style="flex:1; margin:0;">${s.name}</button>`).join('')}
@@ -1111,11 +1537,31 @@
             `;
         }
 
-        async function loadStats() { const res = await fetch('/api/stats'); const d = await res.json(); totalOps = d.operationsCount; }
-        async function loadClientsData() { const res = await fetch('/api/clients'); clients = await res.json(); }
-        async function loadServicesData() { const res = await fetch('/api/services'); services = await res.json(); }
-        async function loadProductsData() { const res = await fetch('/api/products'); products = await res.json(); }
-        async function loadOperationsData() { const res = await fetch('/api/operations'); operations = await res.json(); }
+        async function loadStats() { 
+            const res = await fetch(`/api/stats?userId=${tgUserId}`); 
+            const d = await res.json(); 
+            totalOps = d.operationsCount; 
+        }
+        
+        async function loadClientsData() { 
+            const res = await fetch(`/api/clients?userId=${tgUserId}`); 
+            clients = await res.json(); 
+        }
+        
+        async function loadServicesData() { 
+            const res = await fetch(`/api/services?userId=${tgUserId}`); 
+            services = await res.json(); 
+        }
+        
+        async function loadProductsData() { 
+            const res = await fetch(`/api/products?userId=${tgUserId}`); 
+            products = await res.json(); 
+        }
+        
+        async function loadOperationsData() { 
+            const res = await fetch(`/api/operations?userId=${tgUserId}`); 
+            operations = await res.json(); 
+        }
 
         async function addOperationFromForm() {
             const clientId = document.getElementById('clientSelectAdd').value;
@@ -1134,7 +1580,7 @@
             await fetch('/api/operations', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ clientId: client.id, clientName: client.name, serviceId: itemId, serviceName: name, amount: price })
+                body: JSON.stringify({ userId: tgUserId, clientId: client.id, clientName: client.name, serviceId: itemId, serviceName: name, amount: price })
             });
             showNotification('Операция добавлена');
             switchTab('dashboard');
@@ -1142,7 +1588,7 @@
 
         async function deleteClient(id) {
             if (confirm('Удалить клиента?')) {
-                await fetch(`/api/clients/${id}`, { method: 'DELETE' });
+                await fetch(`/api/clients/${id}?userId=${tgUserId}`, { method: 'DELETE' });
                 await loadClientsData();
                 loadCurrentTab();
                 showNotification('Клиент удалён');
@@ -1151,7 +1597,7 @@
 
         async function deleteService(id) {
             if (confirm('Удалить услугу?')) {
-                await fetch(`/api/services/${id}`, { method: 'DELETE' });
+                await fetch(`/api/services/${id}?userId=${tgUserId}`, { method: 'DELETE' });
                 await loadServicesData();
                 loadCurrentTab();
                 showNotification('Услуга удалена');
@@ -1160,7 +1606,7 @@
 
         async function deleteProduct(id) {
             if (confirm('Удалить товар?')) {
-                await fetch(`/api/products/${id}`, { method: 'DELETE' });
+                await fetch(`/api/products/${id}?userId=${tgUserId}`, { method: 'DELETE' });
                 await loadProductsData();
                 loadCurrentTab();
                 showNotification('Товар удалён');
@@ -1169,31 +1615,12 @@
 
         async function deleteOperation(id) {
             if (confirm('Удалить операцию?')) {
-                await fetch(`/api/operations/${id}`, { method: 'DELETE' });
+                await fetch(`/api/operations/${id}?userId=${tgUserId}`, { method: 'DELETE' });
                 await loadOperationsData();
                 await loadStats();
                 loadCurrentTab();
                 showNotification('Операция удалена');
             }
-        }
-
-        async function editOperation(id) {
-            const op = operations.find(o => o.id === id);
-            if (!op) return;
-            const html = `<label>Сумма (₽)</label><input type="number" id="editAmount" value="${op.amount}" style="margin-bottom:16px;">`;
-            openModal('Редактировать операцию', html, async () => {
-                const newAmount = parseInt(document.getElementById('editAmount').value);
-                if (isNaN(newAmount)) { showNotification('Введите корректную сумму', true); return; }
-                await fetch(`/api/operations/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...op, amount: newAmount })
-                });
-                await loadOperationsData();
-                await loadStats();
-                loadCurrentTab();
-                showNotification('Операция обновлена');
-            });
         }
 
         async function editClient(id) {
@@ -1210,11 +1637,7 @@
                 </select>
                 <label>Статус</label>
                 <select id="editClientStatus">
-                    <option value="new" ${client.status === 'new' ? 'selected' : ''}>🆕 Новый</option>
-                    <option value="negotiation" ${client.status === 'negotiation' ? 'selected' : ''}>💬 В переговорах</option>
-                    <option value="regular" ${client.status === 'regular' ? 'selected' : ''}>⭐ Постоянный</option>
-                    <option value="inactive" ${client.status === 'inactive' ? 'selected' : ''}>💤 Неактивный</option>
-                    <option value="departed" ${client.status === 'departed' ? 'selected' : ''}>❌ Ушедший</option>
+                    ${getStatusOptions(client.status || 'Новый')}
                 </select>
             `;
             openModal('Редактировать клиента', html, async () => {
@@ -1224,7 +1647,7 @@
                 const type = document.getElementById('editClientType').value;
                 const status = document.getElementById('editClientStatus').value;
                 if (!name) { showNotification('Имя обязательно', true); return; }
-                await fetch(`/api/clients/${id}`, {
+                await fetch(`/api/clients/${id}?userId=${tgUserId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, phone, notes, type, status })
@@ -1247,7 +1670,7 @@
                 const price = parseInt(document.getElementById('editServicePrice').value);
                 if (!name) { showNotification('Введите название', true); return; }
                 if (isNaN(price)) { showNotification('Введите цену', true); return; }
-                await fetch(`/api/services/${id}`, {
+                await fetch(`/api/services/${id}?userId=${tgUserId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, price })
@@ -1273,7 +1696,7 @@
                 if (!name) { showNotification('Введите название', true); return; }
                 if (isNaN(price)) { showNotification('Введите цену', true); return; }
                 if (isNaN(stock)) { showNotification('Введите остаток', true); return; }
-                await fetch(`/api/products/${id}`, {
+                await fetch(`/api/products/${id}?userId=${tgUserId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, price, stock })
@@ -1284,7 +1707,26 @@
             });
         }
 
-                function openNewClientModal() {
+        async function editOperation(id) {
+            const op = operations.find(o => o.id === id);
+            if (!op) return;
+            const html = `<label>Сумма (₽)</label><input type="number" id="editAmount" value="${op.amount}" style="margin-bottom:16px;">`;
+            openModal('Редактировать операцию', html, async () => {
+                const newAmount = parseInt(document.getElementById('editAmount').value);
+                if (isNaN(newAmount)) { showNotification('Введите корректную сумму', true); return; }
+                await fetch(`/api/operations/${id}?userId=${tgUserId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: newAmount })
+                });
+                await loadOperationsData();
+                await loadStats();
+                loadCurrentTab();
+                showNotification('Операция обновлена');
+            });
+        }
+
+        function openNewClientModal() {
             const html = `
                 <label>Имя</label><input type="text" id="newClientName" placeholder="Введите имя">
                 <label>Телефон</label><input type="text" id="newClientPhone" placeholder="+7 XXX XXX-XX-XX">
@@ -1295,9 +1737,9 @@
                     <option value="company">Компания / ИП</option>
                 </select>
                 <label>Статус</label>
-<select id="newClientStatus">
-    ${getStatusOptions('Новый')}
-</select>
+                <select id="newClientStatus">
+                    ${getStatusOptions('Новый')}
+                </select>
             `;
             
             openModal('Новый клиент', html, async () => {
@@ -1315,7 +1757,7 @@
                 await fetch('/api/clients', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, phone, notes, type, status })
+                    body: JSON.stringify({ userId: tgUserId, name, phone, notes, type, status })
                 });
                 
                 await loadClientsData();
@@ -1337,7 +1779,7 @@
                 await fetch('/api/services', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, price })
+                    body: JSON.stringify({ userId: tgUserId, name, price })
                 });
                 await loadServicesData();
                 loadCurrentTab();
@@ -1360,7 +1802,7 @@
                 await fetch('/api/products', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, price, stock })
+                    body: JSON.stringify({ userId: tgUserId, name, price, stock })
                 });
                 await loadProductsData();
                 loadCurrentTab();
@@ -1378,7 +1820,7 @@
         }
 
         async function loadSettingsToModal() {
-            const res = await fetch('/api/settings');
+            const res = await fetch(`/api/settings?userId=${tgUserId}`);
             const s = await res.json();
             document.getElementById('profileSelect').value = s.role || 'master';
             document.getElementById('currencySelect').value = s.currency || 'RUB';
@@ -1390,19 +1832,18 @@
             await fetch('/api/settings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ role: profile, currency: currency })
+                body: JSON.stringify({ userId: tgUserId, role: profile, currency: currency })
             });
             currentProfile = profile;
             currentCurrency = currency;
             localStorage.setItem('currency', currency);
             updateProfileBadge();
+            updateQuickAmountLabel();
+            updateQuickSelects();
             closeSettingsModal();
             await loadCurrentTab();
             showNotification('Настройки сохранены');
         }
-
-        let currentCurrency = 'RUB';
-        let currencyRates = { RUB: 1, USD: 0, EUR: 0, BYN: 0 };
 
         async function loadCurrencyRates() {
             try {
@@ -1455,7 +1896,6 @@
             return labels[status] || '🆕 Новый';
         }
 
-        // Функции для бокового меню
         function openSidebar() {
             document.getElementById('sidebar').classList.add('open');
             document.getElementById('sidebarOverlay').classList.add('open');
@@ -1466,7 +1906,7 @@
             document.getElementById('sidebarOverlay').classList.remove('open');
         }
         
-                function initSidebar() {
+        function initSidebar() {
             document.querySelectorAll('.sidebar-item').forEach(item => {
                 item.onclick = () => {
                     const tabId = item.dataset.tab;
@@ -1489,44 +1929,44 @@
             }
             
             await loadCurrencyRates();
-            await loadStatuses();           // ← уже есть
-            await renderStatusesList();     // ← ДОБАВИТЬ ЭТУ СТРОКУ
+            await loadStatuses();
+            await renderStatusesList();
             
-            const res = await fetch('/api/settings');
+            const res = await fetch(`/api/settings?userId=${tgUserId}`);
             const s = await res.json();
             currentProfile = s.role || 'master';
             currentCurrency = s.currency || 'RUB';
             updateProfileBadge();
+            updateQuickAmountLabel();
             
             initSidebar();
             
             await loadCurrentTab();
         }
 
-        // Обработка клавиши Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                // Закрыть боковое меню, если открыто
                 const sidebar = document.getElementById('sidebar');
                 if (sidebar && sidebar.classList.contains('open')) {
                     closeSidebar();
                 }
-                // Закрыть модальное окно, если открыто
                 const modal = document.getElementById('dynamicModal');
                 if (modal && modal.classList.contains('active')) {
                     closeDynamicModal();
                 }
-                // Закрыть окно настроек, если открыто
                 const settingsModal = document.getElementById('settingsModal');
                 if (settingsModal && settingsModal.classList.contains('active')) {
                     closeSettingsModal();
                 }
+                const quickModal = document.getElementById('quickAddModal');
+                if (quickModal && quickModal.classList.contains('active')) {
+                    closeQuickAddModal();
+                }
             }
         });
 
-        // График дохода по дням
-                let incomeChartInstance = null;
-        function drawIncomeChart(dailyData) {
+        let incomeChartInstance = null;
+        function drawIncomeChart(dailyData, chartType = 'line') {
             const ctx = document.getElementById('incomeChart')?.getContext('2d');
             if (!ctx) return;
             if (incomeChartInstance) incomeChartInstance.destroy();
@@ -1534,32 +1974,38 @@
             const days = dailyData.map(d => d.day);
             const values = dailyData.map(d => convertPrice(d.total));
             
-            // Проверка: есть ли хоть какие-то данные
             const hasData = values.some(v => v > 0);
             
             if (!hasData) {
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                ctx.fillStyle = '#888';
-                ctx.font = '14px Rubik';
+                ctx.font = '48px Rubik';
+                ctx.fillStyle = '#2a2a30';
                 ctx.textAlign = 'center';
-                ctx.fillText('📊 Добавьте операции для анализа', ctx.canvas.width / 2, ctx.canvas.height / 2);
+                ctx.fillText('📊', ctx.canvas.width / 2, ctx.canvas.height / 2 - 20);
+                ctx.font = '14px Rubik';
+                ctx.fillStyle = '#6b7280';
+                ctx.fillText('Нет операций за этот период', ctx.canvas.width / 2, ctx.canvas.height / 2 + 30);
                 return;
             }
             
-            incomeChartInstance = new Chart(ctx, {
-                type: 'line',
+            let chartTypeConfig = chartType === 'bar' ? 'bar' : 'line';
+            const isArea = chartType === 'area';
+            
+            const chartConfig = {
+                type: chartTypeConfig,
                 data: {
                     labels: days,
                     datasets: [{
                         label: `Доход (${getCurrencySymbol()})`,
                         data: values,
                         borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        backgroundColor: isArea ? 'rgba(16, 185, 129, 0.2)' : '#10b981',
                         borderWidth: 2,
-                        fill: true,
+                        fill: isArea,
                         tension: 0.3,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#10b981'
+                        pointRadius: chartType === 'line' ? 4 : 0,
+                        pointBackgroundColor: '#10b981',
+                        borderRadius: chartType === 'bar' ? 8 : 0
                     }]
                 },
                 options: {
@@ -1576,10 +2022,11 @@
                         }
                     }
                 }
-            });
+            };
+            
+            incomeChartInstance = new Chart(ctx, chartConfig);
         }
         
-        // Круговая диаграмма топ-клиентов
         let pieChartInstance = null;
         function drawPieChart(topClients) {
             const ctx = document.getElementById('clientsPieChart')?.getContext('2d');
@@ -1587,14 +2034,22 @@
             if (pieChartInstance) pieChartInstance.destroy();
             
             if (topClients.length === 0) {
-    // Прозрачный фон вместо серого
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.fillStyle = '#888';
-    ctx.font = '14px Rubik';
-    ctx.textAlign = 'center';
-    ctx.fillText('📊 Добавьте операции', ctx.canvas.width / 2, ctx.canvas.height / 2);
-    return;
-}
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                
+                ctx.font = '48px Rubik';
+                ctx.fillStyle = '#2a2a30';
+                ctx.textAlign = 'center';
+                ctx.fillText('👥', ctx.canvas.width / 2, ctx.canvas.height / 2 - 20);
+                
+                ctx.font = '14px Rubik';
+                ctx.fillStyle = '#6b7280';
+                ctx.fillText('Нет клиентов с операциями', ctx.canvas.width / 2, ctx.canvas.height / 2 + 30);
+                
+                ctx.font = '12px Rubik';
+                ctx.fillStyle = '#4b5563';
+                ctx.fillText('Добавьте операции, чтобы увидеть топ клиентов', ctx.canvas.width / 2, ctx.canvas.height / 2 + 55);
+                return;
+            }
             
             pieChartInstance = new Chart(ctx, {
                 type: 'pie',
@@ -1617,9 +2072,8 @@
             });
         }
         
-        // Гистограмма по дням недели
         let barChartInstance = null;
-                function drawBarChart(weekdayData) {
+        function drawBarChart(weekdayData) {
             const ctx = document.getElementById('weekdayBarChart')?.getContext('2d');
             if (!ctx) return;
             if (barChartInstance) barChartInstance.destroy();
@@ -1627,15 +2081,23 @@
             const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
             const values = weekdays.map(day => convertPrice(weekdayData[day] || 0));
             
-            // Проверка: есть ли хоть какие-то данные
             const hasData = values.some(v => v > 0);
             
             if (!hasData) {
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                ctx.fillStyle = '#888';
-                ctx.font = '14px Rubik';
+                
+                ctx.font = '48px Rubik';
+                ctx.fillStyle = '#2a2a30';
                 ctx.textAlign = 'center';
-                ctx.fillText('📊 Нет данных за период', ctx.canvas.width / 2, ctx.canvas.height / 2);
+                ctx.fillText('📅', ctx.canvas.width / 2, ctx.canvas.height / 2 - 20);
+                
+                ctx.font = '14px Rubik';
+                ctx.fillStyle = '#6b7280';
+                ctx.fillText('Нет данных за период', ctx.canvas.width / 2, ctx.canvas.height / 2 + 30);
+                
+                ctx.font = '12px Rubik';
+                ctx.fillStyle = '#4b5563';
+                ctx.fillText('Добавьте операции для анализа', ctx.canvas.width / 2, ctx.canvas.height / 2 + 55);
                 return;
             }
             
@@ -1672,7 +2134,7 @@
             return symbols[currentCurrency] || '₽';
         }
 		
-		        let statuses = [];
+        let statuses = [];
 
         async function loadStatuses() {
             try {
@@ -1680,7 +2142,6 @@
                 statuses = await res.json();
             } catch (error) {
                 console.error('Ошибка загрузки статусов:', error);
-                // Статусы по умолчанию, если сервер не ответил
                 statuses = [
                     { id: 1, name: 'Новый', color: '#3b82f6' },
                     { id: 2, name: 'В переговорах', color: '#f59e0b' },
@@ -1705,7 +2166,7 @@
             return statuses.map(s => `<option value="${s.name}" ${selectedStatus === s.name ? 'selected' : ''}>${s.name}</option>`).join('');
         }
 		
-		        async function renderStatusesList() {
+        async function renderStatusesList() {
             const container = document.getElementById('statusesList');
             if (!container) return;
             if (statuses.length === 0) {
@@ -1793,6 +2254,577 @@
                 loadCurrentTab();
                 showNotification('Статус удалён');
             }
+        }
+
+        // ========== БЫСТРАЯ СДЕЛКА ==========
+        const quickAddBtn = document.getElementById('quickAddBtn');
+        const quickAddModal = document.getElementById('quickAddModal');
+        const quickClientSelect = document.getElementById('quickClientSelect');
+        const quickItemSelect = document.getElementById('quickItemSelect');
+        const quickAmount = document.getElementById('quickAmount');
+        const quickSaveBtn = document.getElementById('quickSaveBtn');
+        const quickCancelBtn = document.getElementById('quickCancelBtn');
+        const quickNewClientBtn = document.getElementById('quickNewClientBtn');
+        const quickNewItemBtn = document.getElementById('quickNewItemBtn');
+        
+        async function openQuickAddModal() {
+            await loadClientsData();
+            await loadServicesData();
+            await loadProductsData();
+            updateQuickSelects();
+            updateQuickAmountLabel();
+            quickAddModal.classList.add('active');
+        }
+        
+        function closeQuickAddModal() {
+            quickAddModal.classList.remove('active');
+        }
+        
+        function updateQuickSelects() {
+            if (!quickClientSelect || !quickItemSelect) return;
+            
+            quickClientSelect.innerHTML = '<option value="">-- Выберите клиента --</option>' + 
+                clients.map(c => `<option value="${c.id}" data-name="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('');
+            
+            if (currentProfile === 'master') {
+                if (services.length === 0) {
+                    quickItemSelect.innerHTML = '<option value="">-- Нет услуг. Добавьте первую --</option>';
+                } else {
+                    quickItemSelect.innerHTML = '<option value="">-- Выберите услугу --</option>' + 
+                        services.map(s => {
+                            const priceDisplay = formatPrice(s.price);
+                            return `<option value="${s.id}" data-name="${escapeHtml(s.name)}" data-price="${s.price}">${escapeHtml(s.name)} - ${priceDisplay}</option>`;
+                        }).join('');
+                }
+            } else {
+                if (products.length === 0) {
+                    quickItemSelect.innerHTML = '<option value="">-- Нет товаров. Добавьте первый --</option>';
+                } else {
+                    quickItemSelect.innerHTML = '<option value="">-- Выберите товар --</option>' + 
+                        products.map(p => {
+                            const priceDisplay = formatPrice(p.price);
+                            return `<option value="${p.id}" data-name="${escapeHtml(p.name)}" data-price="${p.price}">${escapeHtml(p.name)} - ${priceDisplay}</option>`;
+                        }).join('');
+                }
+            }
+            
+            quickItemSelect.onchange = () => {
+                const selected = quickItemSelect.options[quickItemSelect.selectedIndex];
+                const priceInRUB = selected?.dataset?.price;
+                if (priceInRUB) {
+                    quickAmount.value = formatPrice(priceInRUB).replace(/[^0-9.,]/g, '').replace(',', '.');
+                    quickAmount.dataset.priceInRUB = priceInRUB;
+                } else {
+                    quickAmount.value = '';
+                    quickAmount.dataset.priceInRUB = '';
+                }
+            };
+            
+            if (quickItemSelect.value) {
+                const selected = quickItemSelect.options[quickItemSelect.selectedIndex];
+                const priceInRUB = selected?.dataset?.price;
+                if (priceInRUB) {
+                    quickAmount.value = formatPrice(priceInRUB).replace(/[^0-9.,]/g, '').replace(',', '.');
+                    quickAmount.dataset.priceInRUB = priceInRUB;
+                }
+            }
+        }
+        
+        async function quickAddOperation() {
+            const clientId = quickClientSelect.value;
+            const itemId = quickItemSelect.value;
+            const amountInput = document.getElementById('quickAmount');
+            let amountInRUB = amountInput?.dataset?.priceInRUB;
+            
+            if (!clientId) {
+                showNotification('Выберите клиента', true);
+                return;
+            }
+            if (!itemId) {
+                showNotification('Выберите услугу/товар', true);
+                return;
+            }
+            
+            const client = clients.find(c => c.id == clientId);
+            let item, name;
+            
+            if (currentProfile === 'master') {
+                item = services.find(s => s.id == itemId);
+                name = item.name;
+            } else {
+                item = products.find(p => p.id == itemId);
+                name = item.name;
+            }
+            
+            let amount = parseFloat(amountInput?.value);
+            if (amount && amount !== parseFloat(formatPrice(item.price).replace(/[^0-9.,]/g, '').replace(',', '.'))) {
+                const rate = currencyRates[currentCurrency];
+                if (rate && rate !== 0 && currentCurrency !== 'RUB') {
+                    amountInRUB = Math.round(amount / rate);
+                } else {
+                    amountInRUB = amount;
+                }
+            } else if (amountInRUB) {
+                amountInRUB = parseInt(amountInRUB);
+            } else {
+                amountInRUB = item.price;
+            }
+            
+            if (totalOps >= 50) {
+                showNotification('Лимит 50 операций. Перейдите на Pro', true);
+                return;
+            }
+            
+            await fetch('/api/operations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: tgUserId,
+                    clientId: client.id,
+                    clientName: client.name,
+                    serviceId: itemId,
+                    serviceName: name,
+                    amount: amountInRUB
+                })
+            });
+            
+            showNotification('✅ Сделка добавлена');
+            closeQuickAddModal();
+            
+            await loadStats();
+            await loadOperationsData();
+            await loadClientsData();
+            await loadServicesData();
+            await loadProductsData();
+            
+            if (currentTab === 'dashboard') {
+                const chartData = await fetch(`/api/charts?period=month&userId=${tgUserId}`).then(r => r.json());
+                const chartType = document.getElementById('chartTypeSelect')?.value || 'line';
+                drawIncomeChart(chartData.dailyIncome, chartType);
+                drawPieChart(chartData.topClients);
+                drawBarChart(chartData.weekdayIncome);
+            }
+            
+            loadCurrentTab();
+        }
+        
+        async function quickNewClient() {
+            const html = `
+                <label>Имя</label>
+                <input type="text" id="newClientName" placeholder="Введите имя">
+                <label>Телефон</label>
+                <input type="text" id="newClientPhone" placeholder="+7 XXX XXX-XX-XX">
+                <label>Тип</label>
+                <select id="newClientType">
+                    <option value="person">Физ. лицо</option>
+                    <option value="company">Компания / ИП</option>
+                </select>
+            `;
+            
+            openModal('Новый клиент', html, async () => {
+                const name = document.getElementById('newClientName').value;
+                const phone = document.getElementById('newClientPhone').value;
+                const type = document.getElementById('newClientType').value;
+                if (!name) {
+                    showNotification('Введите имя', true);
+                    return;
+                }
+                await fetch('/api/clients', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: tgUserId, name, phone, type, status: 'Новый' })
+                });
+                await loadClientsData();
+                updateQuickSelects();
+                showNotification('Клиент добавлен');
+            });
+        }
+        
+        async function quickNewItem() {
+            const isMaster = currentProfile === 'master';
+            const html = `
+                <label>Название</label>
+                <input type="text" id="newItemName" placeholder="${isMaster ? 'Например: Маникюр' : 'Например: Фильтр масляный'}">
+                <label>Цена (₽)</label>
+                <input type="number" id="newItemPrice" placeholder="3000">
+                ${!isMaster ? '<label>Остаток на складе (шт.)</label><input type="number" id="newItemStock" placeholder="0" value="0">' : ''}
+            `;
+            
+            openModal(isMaster ? 'Новая услуга' : 'Новый товар', html, async () => {
+                const name = document.getElementById('newItemName').value;
+                const price = parseInt(document.getElementById('newItemPrice').value);
+                if (!name) {
+                    showNotification('Введите название', true);
+                    return;
+                }
+                if (isNaN(price)) {
+                    showNotification('Введите цену', true);
+                    return;
+                }
+                
+                if (isMaster) {
+                    await fetch('/api/services', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: tgUserId, name, price })
+                    });
+                    await loadServicesData();
+                } else {
+                    const stock = parseInt(document.getElementById('newItemStock')?.value) || 0;
+                    await fetch('/api/products', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: tgUserId, name, price, stock })
+                    });
+                    await loadProductsData();
+                }
+                updateQuickSelects();
+                showNotification('Добавлено');
+            });
+        }
+        
+        if (quickAddBtn) quickAddBtn.onclick = openQuickAddModal;
+        if (quickCancelBtn) quickCancelBtn.onclick = closeQuickAddModal;
+        if (quickSaveBtn) quickSaveBtn.onclick = quickAddOperation;
+        if (quickNewClientBtn) quickNewClientBtn.onclick = quickNewClient;
+        if (quickNewItemBtn) quickNewItemBtn.onclick = quickNewItem;
+		
+		// ========== ВЫПАДАЮЩЕЕ МЕНЮ ЭКСПОРТА ==========
+        function toggleExportMenu() {
+            const menu = document.getElementById('exportDropdown');
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+        }
+        
+        function closeExportMenu() {
+            const menu = document.getElementById('exportDropdown');
+            if (menu) {
+                menu.classList.remove('show');
+            }
+        }
+        
+        document.addEventListener('click', function(e) {
+            const btn = document.getElementById('exportMenuBtn');
+            const menu = document.getElementById('exportDropdown');
+            if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+        
+		// ========== ЭКСПОРТ В CSV ==========
+        function exportToCSV(type) {
+            let data = [];
+            let filename = '';
+            let headers = [];
+            
+            switch(type) {
+                case 'clients':
+                    headers = ['ID', 'Имя', 'Телефон', 'Примечания', 'Тип', 'Статус', 'Дата создания'];
+                    data = clients.map(c => [
+                        c.id ? `="${c.id}"` : '',
+                        c.name || '',
+                        c.phone || '',
+                        c.notes || '',
+                        c.type === 'company' ? 'Компания' : 'Физ. лицо',
+                        c.status || 'Новый',
+                        c.createdAt ? new Date(c.createdAt).toLocaleDateString('ru-RU') : new Date().toLocaleDateString('ru-RU')
+                    ]);
+                    filename = 'clients_export.csv';
+                    break;
+                    
+                case 'services':
+                    headers = ['ID', 'Название услуги', 'Цена (руб)'];
+                    data = services.map(s => [
+                        s.id ? `="${s.id}"` : '',
+                        s.name || '',
+                        s.price || 0
+                    ]);
+                    filename = 'services_export.csv';
+                    break;
+                    
+                case 'products':
+                    headers = ['ID', 'Название товара', 'Цена (руб)', 'Остаток (шт)'];
+                    data = products.map(p => [
+                        p.id ? `="${p.id}"` : '',
+                        p.name || '',
+                        p.price || 0,
+                        p.stock || 0
+                    ]);
+                    filename = 'products_export.csv';
+                    break;
+                    
+                case 'operations':
+                    headers = ['ID', 'Клиент', 'Услуга/Товар', 'Сумма (руб)', 'Дата'];
+                    const sortedOps = [...operations].sort((a, b) => new Date(b.date) - new Date(a.date));
+                    data = sortedOps.map(op => [
+                        op.id ? `="${op.id}"` : '',
+                        op.clientName || '',
+                        op.serviceName || op.productName || '',
+                        op.amount || 0,
+                        op.date ? new Date(op.date).toLocaleDateString('ru-RU') : ''
+                    ]);
+                    filename = 'operations_export.csv';
+                    break;
+                    
+                default:
+                    return;
+            }
+            
+            let csvContent = headers.join(';') + '\n';
+            data.forEach(row => {
+                const escapedRow = row.map(cell => {
+                    if (cell === undefined || cell === null) return '';
+                    const str = String(cell);
+                    if (str.includes(';') || str.includes('"') || str.includes('\n')) {
+                        return `"${str.replace(/"/g, '""')}"`;
+                    }
+                    return str;
+                });
+                csvContent += escapedRow.join(';') + '\n';
+            });
+            
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showNotification(`✅ Экспорт CSV запущен`);
+        }
+		
+		function exportToExcel(type) {
+            const url = `/api/export/${type}`;
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${type}_export.xlsx`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showNotification(`✅ Экспорт Excel запущен`);
+        }
+		
+		// ========== ИМПОРТ ДАННЫХ ==========
+        function importFile(type) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv, .xlsx, .xls';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                showNotification(`⏳ Импорт ${type}...`);
+                
+                try {
+                    const res = await fetch(`/api/import/${type}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await res.json();
+                    
+                    if (result.success) {
+                        showNotification(`✅ Импортировано ${result.imported} записей`);
+                        await loadClientsData();
+                        await loadServicesData();
+                        await loadProductsData();
+                        loadCurrentTab();
+                    } else {
+                        showNotification(`❌ Ошибка импорта`, true);
+                    }
+                } catch (error) {
+                    showNotification(`❌ Ошибка: ${error.message}`, true);
+                }
+            };
+            input.click();
+        }
+        
+        // ========== ШТОРКА ЭКСПОРТА/ИМПОРТА ==========
+        const importExportBtn = document.getElementById('importExportBtn');
+        const importExportModal = document.getElementById('importExportModal');
+        
+        function openImportExportModal() {
+            importExportModal.classList.add('active');
+        }
+        
+        function closeImportExportModal() {
+            importExportModal.classList.remove('active');
+        }
+        
+        if (importExportBtn) {
+            importExportBtn.onclick = openImportExportModal;
+        }
+        
+        // Переключение вкладок
+        const exportTabBtn = document.getElementById('exportTabBtn');
+        const importTabBtn = document.getElementById('importTabBtn');
+        const exportPanel = document.getElementById('exportPanel');
+        const importPanel = document.getElementById('importPanel');
+        
+        function setActiveTab(tab) {
+            if (tab === 'export') {
+                exportTabBtn.classList.add('active');
+                importTabBtn.classList.remove('active');
+                exportPanel.style.display = 'block';
+                importPanel.style.display = 'none';
+            } else {
+                importTabBtn.classList.add('active');
+                exportTabBtn.classList.remove('active');
+                importPanel.style.display = 'block';
+                exportPanel.style.display = 'none';
+            }
+        }
+        
+        if (exportTabBtn && importTabBtn) {
+            exportTabBtn.onclick = () => setActiveTab('export');
+            importTabBtn.onclick = () => setActiveTab('import');
+        }
+		
+		// ========== ВОРОНКА (КАНБАН-ДОСКА) ==========
+        async function loadKanban(container) {
+            await loadClientsData();
+            await loadOperationsData();
+            await loadStatuses();
+			
+			if (!statuses || statuses.length === 0) {
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="section-title">🎯 Воронка продаж</div>
+                        <div style="padding: 40px; text-align: center;">
+                            Нет статусов. Добавьте статусы в настройках.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const sortedStatuses = [...statuses].sort((a, b) => a.id - b.id);
+            
+            const clientRevenue = {};
+            operations.forEach(op => {
+                if (!clientRevenue[op.clientName]) clientRevenue[op.clientName] = 0;
+                clientRevenue[op.clientName] += op.amount;
+            });
+            
+            const clientsByStatus = {};
+            sortedStatuses.forEach(s => {
+                clientsByStatus[s.name] = [];
+            });
+            clients.forEach(client => {
+                const statusName = client.status || 'Новый';
+                if (clientsByStatus[statusName]) {
+                    clientsByStatus[statusName].push(client);
+                } else {
+                    clientsByStatus[statusName] = [client];
+                }
+            });
+            
+            function renderBoard() {
+                const board = document.getElementById('kanbanBoard');
+                if (!board) return;
+                
+                board.innerHTML = sortedStatuses.map(status => {
+                    const statusClients = clientsByStatus[status.name] || [];
+                    const totalAmount = statusClients.reduce((sum, c) => sum + (clientRevenue[c.name] || 0), 0);
+                    
+                    return `
+                        <div class="kanban-column" data-status="${status.name}">
+                            <div class="kanban-header">
+                                <span style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: ${status.color};"></span>
+                                    ${status.name}
+                                </span>
+                                <span class="total">${formatPrice(totalAmount)}</span>
+                            </div>
+                            <div class="kanban-cards" data-status="${status.name}">
+                                ${statusClients.map(client => `
+                                    <div class="kanban-card" draggable="true" data-client-id="${client.id}" data-client-status="${status.name}">
+                                        <div class="kanban-card-name">${escapeHtml(client.name)}</div>
+                                        <div class="kanban-card-amount">💰 ${formatPrice(clientRevenue[client.name] || 0)}</div>
+                                        ${client.phone ? `<div class="kanban-card-phone">📞 ${escapeHtml(client.phone)}</div>` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                initDragAndDrop();
+            }
+            
+            function initDragAndDrop() {
+                const cards = document.querySelectorAll('.kanban-card');
+                const containers = document.querySelectorAll('.kanban-cards');
+                
+                cards.forEach(card => {
+                    card.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('text/plain', JSON.stringify({
+                            clientId: card.dataset.clientId,
+                            fromStatus: card.dataset.clientStatus
+                        }));
+                        card.classList.add('dragging');
+                    });
+                    card.addEventListener('dragend', (e) => {
+                        card.classList.remove('dragging');
+                    });
+                });
+                
+                containers.forEach(container => {
+                    container.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                    });
+                    
+                    container.addEventListener('drop', async (e) => {
+                        e.preventDefault();
+                        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+                        const newStatus = container.dataset.status;
+                        
+                        if (data.fromStatus === newStatus) return;
+                        
+                        await fetch(`/api/clients/${data.clientId}/status`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ status: newStatus })
+                        });
+                        
+                        await loadClientsData();
+                        await loadOperationsData();
+                        
+                        const newClientsByStatus = {};
+                        sortedStatuses.forEach(s => { newClientsByStatus[s.name] = []; });
+                        clients.forEach(client => {
+                            const statusName = client.status || 'Новый';
+                            if (newClientsByStatus[statusName]) {
+                                newClientsByStatus[statusName].push(client);
+                            } else {
+                                newClientsByStatus[statusName] = [client];
+                            }
+                        });
+                        Object.assign(clientsByStatus, newClientsByStatus);
+                        
+                        renderBoard();
+                        showNotification(`Клиент перемещён в "${newStatus}"`);
+                    });
+                });
+            }
+            
+            container.innerHTML = `
+                <div class="card">
+                    <div class="section-title">🎯 Воронка продаж</div>
+                    <div style="margin-bottom: 16px; font-size: 14px; opacity: 0.7;">
+                        💡 Перетаскивайте карточки клиентов между колонками, чтобы изменить статус
+                    </div>
+                    <div id="kanbanBoard" class="kanban-board"></div>
+                </div>
+            `;
+            
+            renderBoard();
         }
 
         init();

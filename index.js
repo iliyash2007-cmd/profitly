@@ -34,6 +34,25 @@ if (!fs.existsSync(path.join(DATA_DIR, 'services.json'))) {
 }
 if (!fs.existsSync(path.join(DATA_DIR, 'products.json'))) writeJSON('products.json', []);
 if (!fs.existsSync(path.join(DATA_DIR, 'operations.json'))) writeJSON('operations.json', []);
+if (!fs.existsSync(path.join(DATA_DIR, 'statuses.json'))) {
+  writeJSON('statuses.json', [
+    { id: 1, name: 'Новый', color: '#3b82f6' },
+    { id: 2, name: 'В переговорах', color: '#f59e0b' },
+    { id: 3, name: 'Постоянный', color: '#10b981' },
+    { id: 4, name: 'Неактивный', color: '#6b7280' },
+    { id: 5, name: 'Ушедший', color: '#ef4444' }
+  ]);
+}
+
+if (!fs.existsSync(path.join(DATA_DIR, 'statuses.json'))) {
+  writeJSON('statuses.json', [
+    { id: 1, name: 'Новый', color: '#3b82f6' },
+    { id: 2, name: 'В переговорах', color: '#f59e0b' },
+    { id: 3, name: 'Постоянный', color: '#10b981' },
+    { id: 4, name: 'Неактивный', color: '#6b7280' },
+    { id: 5, name: 'Ушедший', color: '#ef4444' }
+  ]);
+}
 
 // API: настройки
 app.get('/api/settings', (req, res) => {
@@ -47,19 +66,15 @@ app.post('/api/settings', (req, res) => {
   res.json({ success: true });
 });
 
-// API: получить всех клиентов
+// API: клиенты
 app.get('/api/clients', (req, res) => {
   res.json(readJSON('clients.json'));
 });
 
-// ========== ДОПОЛНИТЕЛЬНЫЕ API ДЛЯ КЛИЕНТОВ ==========
-
-// Создание нового клиента
 app.post('/api/clients', (req, res) => {
   const clients = readJSON('clients.json');
   const { name, phone, notes, type, status } = req.body;
-  
-  const newClient = {
+  clients.push({
     id: Date.now(),
     name: name || '',
     phone: phone || '',
@@ -67,24 +82,17 @@ app.post('/api/clients', (req, res) => {
     type: type || 'person',
     status: status || 'Новый',
     createdAt: new Date().toISOString()
-  };
-  
-  clients.push(newClient);
+  });
   writeJSON('clients.json', clients);
-  res.json({ success: true, client: newClient });
+  res.json({ success: true });
 });
 
-// Обновление клиента
 app.put('/api/clients/:id', (req, res) => {
   const clients = readJSON('clients.json');
   const { name, phone, notes, type, status } = req.body;
   const id = parseInt(req.params.id);
   const index = clients.findIndex(c => c.id === id);
-  
-  if (index === -1) {
-    return res.status(404).json({ error: 'Client not found' });
-  }
-  
+  if (index === -1) return res.status(404).json({ error: 'Client not found' });
   clients[index] = {
     ...clients[index],
     name: name !== undefined ? name : clients[index].name,
@@ -93,12 +101,10 @@ app.put('/api/clients/:id', (req, res) => {
     type: type !== undefined ? type : clients[index].type,
     status: status !== undefined ? status : clients[index].status
   };
-  
   writeJSON('clients.json', clients);
   res.json({ success: true });
 });
 
-// Удаление клиента
 app.delete('/api/clients/:id', (req, res) => {
   const clients = readJSON('clients.json');
   const id = parseInt(req.params.id);
@@ -107,52 +113,16 @@ app.delete('/api/clients/:id', (req, res) => {
   res.json({ success: true });
 });
 
-// API: добавить нового клиента
-app.post('/api/clients', (req, res) => {
+app.patch('/api/clients/:id/status', (req, res) => {
   const clients = readJSON('clients.json');
-  const { name, phone, notes, type } = req.body;
-  clients.push({
-    id: Date.now(),
-    name,
-    phone: phone || '',
-    notes: notes || '',
-    type: type || 'person',
-    createdAt: new Date().toISOString()
-  });
+  const { status } = req.body;
+  const index = clients.findIndex(c => c.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ error: 'Client not found' });
+  clients[index].status = status;
   writeJSON('clients.json', clients);
   res.json({ success: true });
 });
 
-// API: обновить клиента (редактирование)
-app.put('/api/clients/:id', (req, res) => {
-    const clients = readJSON('clients.json');
-    const { name, phone, notes, type, status } = req.body;
-    const index = clients.findIndex(c => c.id === parseInt(req.params.id));
-    
-    if (index === -1) {
-        return res.status(404).json({ error: 'Client not found' });
-    }
-    
-    clients[index] = {
-        ...clients[index],
-        name: name !== undefined ? name : clients[index].name,
-        phone: phone !== undefined ? phone : clients[index].phone,
-        notes: notes !== undefined ? notes : clients[index].notes,
-        type: type !== undefined ? type : clients[index].type,
-        status: status !== undefined ? status : clients[index].status
-    };
-    
-    writeJSON('clients.json', clients);
-    res.json({ success: true });
-});
-
-// API: удалить клиента
-app.delete('/api/clients/:id', (req, res) => {
-  const clients = readJSON('clients.json');
-  const filtered = clients.filter(c => c.id !== parseInt(req.params.id));
-  writeJSON('clients.json', filtered);
-  res.json({ success: true });
-});
 // API: услуги
 app.get('/api/services', (req, res) => {
   res.json(readJSON('services.json'));
@@ -160,13 +130,18 @@ app.get('/api/services', (req, res) => {
 
 app.post('/api/services', (req, res) => {
   const services = readJSON('services.json');
-  const { id, name, price } = req.body;
-  if (id) {
-    const index = services.findIndex(s => s.id === id);
-    if (index !== -1) services[index] = { ...services[index], name, price };
-  } else {
-    services.push({ id: Date.now(), name, price });
-  }
+  const { name, price } = req.body;
+  services.push({ id: Date.now(), name, price });
+  writeJSON('services.json', services);
+  res.json({ success: true });
+});
+
+app.put('/api/services/:id', (req, res) => {
+  const services = readJSON('services.json');
+  const { name, price } = req.body;
+  const index = services.findIndex(s => s.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ error: 'Service not found' });
+  services[index] = { ...services[index], name, price };
   writeJSON('services.json', services);
   res.json({ success: true });
 });
@@ -178,7 +153,7 @@ app.delete('/api/services/:id', (req, res) => {
   res.json({ success: true });
 });
 
-// API: товары (НОВЫЙ БЛОК — ДОБАВИТЬ)
+// API: товары
 app.get('/api/products', (req, res) => {
   res.json(readJSON('products.json'));
 });
@@ -187,6 +162,16 @@ app.post('/api/products', (req, res) => {
   const products = readJSON('products.json');
   const { name, price, stock } = req.body;
   products.push({ id: Date.now(), name, price, stock: stock || 0 });
+  writeJSON('products.json', products);
+  res.json({ success: true });
+});
+
+app.put('/api/products/:id', (req, res) => {
+  const products = readJSON('products.json');
+  const { name, price, stock } = req.body;
+  const index = products.findIndex(p => p.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ error: 'Product not found' });
+  products[index] = { ...products[index], name, price, stock: stock !== undefined ? stock : products[index].stock };
   writeJSON('products.json', products);
   res.json({ success: true });
 });
@@ -226,44 +211,45 @@ app.post('/api/operations', (req, res) => {
   res.json({ success: true });
 });
 
-// API: удалить операцию (уже есть, оставляем)
 app.delete('/api/operations/:id', (req, res) => {
   const operations = readJSON('operations.json');
   const filtered = operations.filter(op => op.id !== parseInt(req.params.id));
   writeJSON('operations.json', filtered);
-  updateClientStatus(clientId);
   res.json({ success: true });
 });
 
-// API: обновить операцию (уже есть, оставляем)
 app.put('/api/operations/:id', (req, res) => {
   const operations = readJSON('operations.json');
-  const { clientId, clientName, serviceId, serviceName, amount, date } = req.body;
+  const { amount } = req.body;
   const index = operations.findIndex(op => op.id === parseInt(req.params.id));
-  
-  if (index === -1) {
-    return res.status(404).json({ error: 'Operation not found' });
-  }
-  
-  const now = new Date();
-  const weekdayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const operationDate = date ? new Date(date) : now;
-  
-  operations[index] = {
-    ...operations[index],
-    clientId,
-    clientName,
-    serviceId,
-    serviceName,
-    amount,
-    date: operationDate.toISOString().split('T')[0],
-    datetime: operationDate.toISOString(),
-    weekday: weekdayNames[operationDate.getDay()],
-    weekdayIndex: operationDate.getDay(),
-    hour: operationDate.getHours()
-  };
-  
+  if (index === -1) return res.status(404).json({ error: 'Operation not found' });
+  operations[index].amount = amount;
   writeJSON('operations.json', operations);
+  res.json({ success: true });
+});
+
+// API: статусы
+app.get('/api/statuses', (req, res) => {
+  res.json(readJSON('statuses.json'));
+});
+
+app.post('/api/statuses', (req, res) => {
+  const statuses = readJSON('statuses.json');
+  const { id, name, color } = req.body;
+  if (id) {
+    const index = statuses.findIndex(s => s.id === id);
+    if (index !== -1) statuses[index] = { id, name, color };
+  } else {
+    statuses.push({ id: Date.now(), name, color: color || '#10b981' });
+  }
+  writeJSON('statuses.json', statuses);
+  res.json({ success: true });
+});
+
+app.delete('/api/statuses/:id', (req, res) => {
+  const statuses = readJSON('statuses.json');
+  const filtered = statuses.filter(s => s.id !== parseInt(req.params.id));
+  writeJSON('statuses.json', filtered);
   res.json({ success: true });
 });
 
@@ -317,227 +303,95 @@ app.get('/api/stats', (req, res) => {
   res.json({ totalIncome, topClients, reminders, aiAdvice, operationsCount: operations.length });
 });
 
-// ========== НОВЫЕ ФУНКЦИИ ДЛЯ СТАТУСОВ КЛИЕНТОВ ==========
-
-// Эндпоинт для смены статуса
-app.patch('/api/clients/:id/status', (req, res) => {
-  const clients = readJSON('clients.json');
-  const { status } = req.body;
-  const index = clients.findIndex(c => c.id === parseInt(req.params.id));
+// API: данные для графиков
+app.get('/api/charts', (req, res) => {
+  let operations = readJSON('operations.json');
+  const { period = 'month', clientNames = '' } = req.query;
   
-  if (index === -1) {
-    return res.status(404).json({ error: 'Client not found' });
+  if (clientNames) {
+    const names = decodeURIComponent(clientNames).split(',');
+    operations = operations.filter(op => names.includes(op.clientName));
   }
   
-  clients[index].status = status;
-  writeJSON('clients.json', clients);
-  res.json({ success: true });
-});
-
-// Функция автоматического обновления статуса
-async function updateClientStatus(clientId) {
-  const clients = readJSON('clients.json');
-  const operations = readJSON('operations.json');
-  const client = clients.find(c => c.id === clientId);
-  if (!client) return;
-  
-  const clientOps = operations.filter(op => op.clientId === clientId);
   const now = new Date();
-  const lastOpDate = clientOps.length ? new Date(Math.max(...clientOps.map(op => new Date(op.date)))) : null;
-  const daysSinceLastOp = lastOpDate ? Math.floor((now - lastOpDate) / (1000 * 60 * 60 * 24)) : null;
-  
-  let newStatus = client.status || 'new';
-  
-  if (clientOps.length === 0) {
-    newStatus = 'new';
-  } else if (clientOps.length >= 3 && client.status !== 'regular') {
-    newStatus = 'regular';
+  let startDate = new Date();
+  switch (period) {
+    case 'month':
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      break;
+    case 'quarter':
+      const quarter = Math.floor(now.getMonth() / 3);
+      startDate = new Date(now.getFullYear(), quarter * 3, 1);
+      break;
+    case 'year':
+      startDate = new Date(now.getFullYear(), 0, 1);
+      break;
   }
   
-  if (daysSinceLastOp !== null && daysSinceLastOp > 60 && newStatus !== 'departed') {
-    newStatus = 'departed';
-  }
+  operations = operations.filter(op => new Date(op.date) >= startDate);
   
-  if (newStatus !== client.status) {
-    client.status = newStatus;
-    writeJSON('clients.json', clients);
-  }
-}
-
-const PORT = process.env.PORT || 3000;
-// API: обновить клиента (редактирование)
-app.put('/api/clients/:id', (req, res) => {
-  const clients = readJSON('clients.json');
-  const { name, phone, notes, type } = req.body;
-  const index = clients.findIndex(c => c.id === parseInt(req.params.id));
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const dailyIncome = {};
+  for (let i = 1; i <= daysInMonth; i++) dailyIncome[i] = 0;
   
-  if (index === -1) {
-    return res.status(404).json({ error: 'Client not found' });
-  }
+  const weekdayIncome = { 'Пн': 0, 'Вт': 0, 'Ср': 0, 'Чт': 0, 'Пт': 0, 'Сб': 0, 'Вс': 0 };
   
-  clients[index] = {
-    ...clients[index],
-    name: name || clients[index].name,
-    phone: phone || clients[index].phone,
-    notes: notes || clients[index].notes,
-    type: type || clients[index].type
-  };
+  operations.forEach(op => {
+    const date = new Date(op.date);
+    if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
+      dailyIncome[date.getDate()] = (dailyIncome[date.getDate()] || 0) + op.amount;
+    }
+    const weekdayMap = { 1: 'Пн', 2: 'Вт', 3: 'Ср', 4: 'Чт', 5: 'Пт', 6: 'Сб', 0: 'Вс' };
+    const weekday = weekdayMap[date.getDay()];
+    if (weekday) weekdayIncome[weekday] = (weekdayIncome[weekday] || 0) + op.amount;
+  });
   
-  writeJSON('clients.json', clients);
-  res.json({ success: true });
-});
-// API: обновить услугу (редактирование)
-app.put('/api/services/:id', (req, res) => {
-  const services = readJSON('services.json');
-  const { name, price } = req.body;
-  const index = services.findIndex(s => s.id === parseInt(req.params.id));
+  const dailyIncomeArray = Object.entries(dailyIncome).map(([day, total]) => ({ day: parseInt(day), total }));
+  dailyIncomeArray.sort((a, b) => a.day - b.day);
   
-  if (index === -1) {
-    return res.status(404).json({ error: 'Service not found' });
-  }
+  const clientTotals = {};
+  operations.forEach(op => {
+    clientTotals[op.clientName] = (clientTotals[op.clientName] || 0) + op.amount;
+  });
+  const topClients = Object.entries(clientTotals)
+    .map(([name, total]) => ({ name, total }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 5);
   
-  services[index] = {
-    ...services[index],
-    name: name || services[index].name,
-    price: price || services[index].price
-  };
-  
-  writeJSON('services.json', services);
-  res.json({ success: true });
+  res.json({ dailyIncome: dailyIncomeArray, weekdayIncome, topClients });
 });
 
-// API: обновить товар (редактирование)
-app.put('/api/products/:id', (req, res) => {
-  const products = readJSON('products.json');
-  const { name, price, stock } = req.body;
-  const index = products.findIndex(p => p.id === parseInt(req.params.id));
-  
-  if (index === -1) {
-    return res.status(404).json({ error: 'Product not found' });
-  }
-  
-  products[index] = {
-    ...products[index],
-    name: name || products[index].name,
-    price: price || products[index].price,
-    stock: stock !== undefined ? stock : products[index].stock
-  };
-  
-  writeJSON('products.json', products);
-  res.json({ success: true });
-});
-// Курсы валют (обновляются раз в час)
-let currencyRates = {
-  RUB: 1,
-  USD: 0,
-  EUR: 0,
-  BYN: 0,
-  lastUpdate: null
-};
+// Курсы валют
+let currencyRates = { RUB: 1, USD: 0, EUR: 0, BYN: 0 };
 
 async function updateCurrencyRates() {
   try {
-    // Бесплатное API от exchangerate-api.com (не требует ключа)
     const response = await axios.get('https://api.exchangerate-api.com/v4/latest/RUB');
     const rates = response.data.rates;
-    currencyRates = {
-      RUB: 1,
-      USD: rates.USD || 0.011,
-      EUR: rates.EUR || 0.010,
-      BYN: rates.BYN || 0.035,
-      lastUpdate: new Date().toISOString()
-    };
-    console.log('✅ Курсы валют обновлены:', currencyRates);
+    currencyRates = { RUB: 1, USD: rates.USD || 0.011, EUR: rates.EUR || 0.010, BYN: rates.BYN || 0.035, lastUpdate: new Date().toISOString() };
   } catch (error) {
-    console.error('❌ Ошибка получения курсов валют:', error.message);
-    // Если API не работает, используем примерные курсы
-    currencyRates = {
-      RUB: 1,
-      USD: 0.011,
-      EUR: 0.010,
-      BYN: 0.035,
-      lastUpdate: new Date().toISOString()
-    };
+    currencyRates = { RUB: 1, USD: 0.011, EUR: 0.010, BYN: 0.035, lastUpdate: new Date().toISOString() };
   }
 }
 
-// Обновляем курсы при старте
 updateCurrencyRates();
-// Обновляем каждый час
 setInterval(updateCurrencyRates, 60 * 60 * 1000);
 
-// API: получить курсы валют
 app.get('/api/currency/rates', (req, res) => {
   res.json(currencyRates);
 });
 
-// Авто-пинг (будильник) — не даём Render усыпить приложение
-
-
+// Авто-пинг
 function pingSelf() {
-    const url = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
-    axios.get(url).catch(err => console.log('⚠️ Пинг не удался:', err.message));
+  const url = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+  axios.get(url).catch(err => console.log('⚠️ Пинг не удался:', err.message));
 }
 
-// Запускаем пинг через 30 секунд после старта
 setTimeout(() => {
-    pingSelf();
-    setInterval(pingSelf, 10 * 60 * 1000); // каждые 10 минут
-    console.log('✅ Авто-пинг запущен (каждые 10 минут)');
+  pingSelf();
+  setInterval(pingSelf, 10 * 60 * 1000);
+  console.log('✅ Авто-пинг запущен (каждые 10 минут)');
 }, 30000);
-
-// API: данные для графиков
-app.get('/api/charts', (req, res) => {
-    const operations = readJSON('operations.json');
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth();
-    
-    // 1. Доход по дням текущего месяца
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const dailyIncome = {};
-    for (let i = 1; i <= daysInMonth; i++) {
-        dailyIncome[i] = 0;
-    }
-    
-    const weekdayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-    const weekdayIncome = { 'Пн': 0, 'Вт': 0, 'Ср': 0, 'Чт': 0, 'Пт': 0, 'Сб': 0, 'Вс': 0 };
-    
-    operations.forEach(op => {
-        const date = new Date(op.date);
-        if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-            const day = date.getDate();
-            dailyIncome[day] = (dailyIncome[day] || 0) + op.amount;
-        }
-        
-        // Для гистограммы по дням недели (все операции)
-        const weekdayIndex = date.getDay();
-        const weekdayMap = { 1: 'Пн', 2: 'Вт', 3: 'Ср', 4: 'Чт', 5: 'Пт', 6: 'Сб', 0: 'Вс' };
-        const weekday = weekdayMap[weekdayIndex];
-        if (weekday) {
-            weekdayIncome[weekday] = (weekdayIncome[weekday] || 0) + op.amount;
-        }
-    });
-    
-    const dailyIncomeArray = Object.entries(dailyIncome).map(([day, total]) => ({ day: parseInt(day), total }));
-    dailyIncomeArray.sort((a, b) => a.day - b.day);
-    
-    // Топ-5 клиентов
-    const clientTotals = {};
-    operations.forEach(op => {
-        clientTotals[op.clientName] = (clientTotals[op.clientName] || 0) + op.amount;
-    });
-    const topClients = Object.entries(clientTotals)
-        .map(([name, total]) => ({ name, total }))
-        .sort((a, b) => b.total - a.total)
-        .slice(0, 5);
-    
-    res.json({
-        dailyIncome: dailyIncomeArray,
-        weekdayIncome: weekdayIncome,
-        topClients: topClients
-    });
-});
 
 // API: получить все статусы
 app.get('/api/statuses', (req, res) => {
@@ -562,9 +416,262 @@ app.post('/api/statuses', (req, res) => {
 // API: удалить статус
 app.delete('/api/statuses/:id', (req, res) => {
     const statuses = readJSON('statuses.json');
-    const filtered = statuses.filter(s => s.id !== parseInt(req.params.id));
+    const id = parseInt(req.params.id);
+    const deletedStatus = statuses.find(s => s.id === id);
+    const filtered = statuses.filter(s => s.id !== id);
     writeJSON('statuses.json', filtered);
+    
+    // Если статус удалён, меняем у клиентов статус на "Новый"
+    if (deletedStatus) {
+        const clients = readJSON('clients.json');
+        let updated = false;
+        clients.forEach(client => {
+            if (client.status === deletedStatus.name) {
+                client.status = 'Новый';
+                updated = true;
+            }
+        });
+        if (updated) writeJSON('clients.json', clients);
+    }
+    
     res.json({ success: true });
 });
+
+const PORT = process.env.PORT || 3000;
+
+// API: экспорт в Excel
+app.get('/api/export/:type', (req, res) => {
+    const XLSX = require('xlsx');
+    const { type } = req.params;
+    
+    let data = [];
+    let sheetName = '';
+    let filename = '';
+    
+    switch(type) {
+        case 'clients':
+            const clients = readJSON('clients.json');
+            data = clients.map(c => ({
+                'ID': c.id,
+                'Имя': c.name || '',
+                'Телефон': c.phone || '',
+                'Примечания': c.notes || '',
+                'Тип': c.type === 'company' ? 'Компания' : 'Физ. лицо',
+                'Статус': c.status || 'Новый',
+                'Дата создания': c.createdAt ? new Date(c.createdAt).toLocaleDateString('ru-RU') : new Date().toLocaleDateString('ru-RU')
+            }));
+            sheetName = 'Клиенты';
+            filename = 'clients_export.xlsx';
+            break;
+            
+        case 'services':
+            const services = readJSON('services.json');
+            data = services.map(s => ({
+                'ID': s.id,
+                'Название услуги': s.name || '',
+                'Цена (руб)': s.price || 0
+            }));
+            sheetName = 'Услуги';
+            filename = 'services_export.xlsx';
+            break;
+            
+        case 'products':
+            const products = readJSON('products.json');
+            data = products.map(p => ({
+                'ID': p.id,
+                'Название товара': p.name || '',
+                'Цена (руб)': p.price || 0,
+                'Остаток (шт)': p.stock || 0
+            }));
+            sheetName = 'Товары';
+            filename = 'products_export.xlsx';
+            break;
+            
+        case 'operations':
+            const operations = readJSON('operations.json');
+            const sorted = [...operations].sort((a, b) => new Date(b.date) - new Date(a.date));
+            data = sorted.map(op => ({
+                'ID': op.id,
+                'Клиент': op.clientName || '',
+                'Услуга/Товар': op.serviceName || op.productName || '',
+                'Сумма (руб)': op.amount || 0,
+                'Дата': op.date ? new Date(op.date).toLocaleDateString('ru-RU') : ''
+            }));
+            sheetName = 'Операции';
+            filename = 'operations_export.xlsx';
+            break;
+            
+        default:
+            return res.status(400).json({ error: 'Invalid export type' });
+    }
+    
+    // Создаём worksheet
+    const ws = XLSX.utils.json_to_sheet(data);
+    
+    // Находим индекс колонки ID (обычно первая, 'A')
+    const range = XLSX.utils.decode_range(ws['!ref'] || 'A1:A1');
+    const idCol = 'A';
+    
+    // Применяем текстовый формат ко всей колонке ID
+    for (let row = range.s.r + 1; row <= range.e.r; row++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: row, c: 0 });
+        if (ws[cellAddress]) {
+            ws[cellAddress].t = 's'; // меняем тип на string
+            ws[cellAddress].z = '@'; // текстовый формат
+        }
+    }
+    
+    // Автоширина колонок
+    const colWidths = [];
+    if (data.length > 0) {
+        Object.keys(data[0]).forEach((key, idx) => {
+            let maxLen = key.length;
+            data.forEach(row => {
+                const val = String(row[key] || '');
+                maxLen = Math.max(maxLen, val.length);
+            });
+            colWidths.push({ wch: Math.min(maxLen + 2, 30) });
+        });
+        ws['!cols'] = colWidths;
+    }
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    
+    const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer);
+});
+
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
+// API: импорт клиентов из файла
+app.post('/api/import/clients', upload.single('file'), (req, res) => {
+    const XLSX = require('xlsx');
+    const workbook = XLSX.readFile(req.file.path);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+    
+    const clients = readJSON('clients.json');
+    let imported = 0;
+    let errors = [];
+    
+    rows.forEach(row => {
+        const name = row['Имя'] || row['name'] || row['Наименование'];
+        if (!name) {
+            errors.push(`Пропущена строка: нет имени`);
+            return;
+        }
+        
+        clients.push({
+            id: Date.now() + imported,
+            name: name,
+            phone: row['Телефон'] || row['phone'] || '',
+            notes: row['Примечания'] || row['notes'] || '',
+            type: (row['Тип'] || row['type'] || 'Физ. лицо') === 'Компания' ? 'company' : 'person',
+            status: row['Статус'] || row['status'] || 'Новый',
+            createdAt: new Date().toISOString()
+        });
+        imported++;
+    });
+    
+    writeJSON('clients.json', clients);
+    res.json({ success: true, imported, errors });
+});
+
+// API: импорт услуг
+app.post('/api/import/services', upload.single('file'), (req, res) => {
+    const XLSX = require('xlsx');
+    const workbook = XLSX.readFile(req.file.path);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+    
+    const services = readJSON('services.json');
+    let imported = 0;
+    
+    rows.forEach(row => {
+        const name = row['Название услуги'] || row['name'] || row['Наименование'];
+        const price = parseFloat(row['Цена (руб)'] || row['price'] || 0);
+        if (!name) return;
+        
+        services.push({ id: Date.now() + imported, name, price });
+        imported++;
+    });
+    
+    writeJSON('services.json', services);
+    res.json({ success: true, imported });
+});
+
+// API: импорт товаров
+app.post('/api/import/products', upload.single('file'), (req, res) => {
+    const XLSX = require('xlsx');
+    const workbook = XLSX.readFile(req.file.path);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+    
+    const products = readJSON('products.json');
+    let imported = 0;
+    
+    rows.forEach(row => {
+        const name = row['Название товара'] || row['name'] || row['Наименование'];
+        const price = parseFloat(row['Цена (руб)'] || row['price'] || 0);
+        const stock = parseInt(row['Остаток (шт)'] || row['stock'] || 0);
+        if (!name) return;
+        
+        products.push({ id: Date.now() + imported, name, price, stock });
+        imported++;
+    });
+    
+    writeJSON('products.json', products);
+    res.json({ success: true, imported });
+});
+
+// ========== НАСТРОЙКА TELEGRAM БОТА ==========
+const botToken = '8839064053:AAFrHnYQVr1VegyAvEY24a8VBOfD7CB_470'; // ← ВСТАВЬ СВОЙ ТОКЕН ОТ @BotFather
+const botUrl = 'https://profitly-uyyb.onrender.com'; // ← ТВОЯ ССЫЛКА НА RENDER
+
+// Эндпоинт для обработки команд от Telegram
+app.post('/webhook', async (req, res) => {
+    const { message } = req.body;
+    if (message && message.text === '/start') {
+        const chatId = message.chat.id;
+        const webAppUrl = 'https://t.me/Profiltybot/Profilty'; // Твоя ссылка из BotFather
+        
+        const inlineKeyboard = {
+            inline_keyboard: [[
+                { text: '🚀 Открыть Profitly', web_app: { url: webAppUrl } }
+            ]]
+        };
+        
+        try {
+            await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                chat_id: chatId,
+                text: 'Добро пожаловать в Profitly! Нажмите на кнопку ниже, чтобы открыть приложение:',
+                reply_markup: inlineKeyboard
+            });
+        } catch (error) {
+            console.error('Ошибка отправки сообщения:', error.message);
+        }
+    }
+    res.sendStatus(200);
+});
+
+// Установка webhook при запуске
+async function setWebhook() {
+    const webhookUrl = `${botUrl}/webhook`;
+    try {
+        await axios.post(`https://api.telegram.org/bot${botToken}/setWebhook`, {
+            url: webhookUrl
+        });
+        console.log(`✅ Webhook установлен: ${webhookUrl}`);
+    } catch (error) {
+        console.error('❌ Ошибка установки webhook:', error.message);
+    }
+}
+
+// Запускаем установку webhook
+setTimeout(setWebhook, 5000);
 
 app.listen(PORT, () => console.log(`✅ Profitly запущен на http://localhost:${PORT}`));
