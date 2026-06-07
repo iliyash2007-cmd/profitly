@@ -633,11 +633,16 @@ const botToken = '8893186724:AAEMzCAgE5_wnILqEpC3gFAyMS_z7WxtwSk';
 const botUrl = 'https://profitly-uyyb.onrender.com';
 
 // Эндпоинт для обработки команд от Telegram
-app.post('/webhook', async (req, res) => {
+app.post('/webhook', express.json(), async (req, res) => {
+    console.log('📩 Получен запрос:', JSON.stringify(req.body));
+    
     const { message } = req.body;
     if (message && message.text === '/start') {
         const chatId = message.chat.id;
-        const webAppUrl = 'https://t.me/ProfitlyBot/Profitly'; // Убедись, что имя бота правильное
+        console.log(`👤 Пользователь ${chatId} отправил /start`);
+        
+        // ПРАВИЛЬНАЯ ССЫЛКА
+        const webAppUrl = 'https://t.me/Profiitlybot/Profitly';
         
         const inlineKeyboard = {
             inline_keyboard: [[
@@ -646,33 +651,32 @@ app.post('/webhook', async (req, res) => {
         };
         
         try {
-            await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            const response = await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 chat_id: chatId,
                 text: 'Добро пожаловать в Profitly! Нажмите на кнопку ниже, чтобы открыть приложение:',
                 reply_markup: inlineKeyboard
             });
-            console.log(`✅ Сообщение отправлено в чат ${chatId}`);
+            console.log('✅ Сообщение отправлено:', response.data);
         } catch (error) {
-            console.error('❌ Ошибка отправки сообщения:', error.message);
+            console.error('❌ Ошибка:', error.response?.data || error.message);
         }
     }
     res.sendStatus(200);
 });
 
-// Установка webhook при запуске
+// Установка webhook
 async function setWebhook() {
     const webhookUrl = `${botUrl}/webhook`;
     try {
         const response = await axios.post(`https://api.telegram.org/bot${botToken}/setWebhook`, {
             url: webhookUrl
         });
-        console.log(`✅ Webhook установлен: ${webhookUrl}`, response.data);
+        console.log('✅ Webhook установлен:', response.data);
     } catch (error) {
         console.error('❌ Ошибка установки webhook:', error.message);
     }
 }
 
-// Запускаем установку webhook через 3 секунды после старта
 setTimeout(setWebhook, 3000);
 
 app.listen(PORT, () => console.log(`✅ Profitly запущен на http://localhost:${PORT}`));
