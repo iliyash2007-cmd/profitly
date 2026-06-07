@@ -629,15 +629,15 @@ app.post('/api/import/products', upload.single('file'), (req, res) => {
 });
 
 // ========== НАСТРОЙКА TELEGRAM БОТА ==========
-const botToken = '8839064053:AAFrHnYQVr1VegyAvEY24a8VBOfD7CB_470'; // ← ВСТАВЬ СВОЙ ТОКЕН ОТ @BotFather
-const botUrl = 'https://profitly-uyyb.onrender.com'; // ← ТВОЯ ССЫЛКА НА RENDER
+const botToken = '8893186724:AAEMzCAgE5_wnILqEpC3gFAyMS_z7WxtwSk';
+const botUrl = 'https://profitly-uyyb.onrender.com';
 
 // Эндпоинт для обработки команд от Telegram
 app.post('/webhook', async (req, res) => {
     const { message } = req.body;
     if (message && message.text === '/start') {
         const chatId = message.chat.id;
-        const webAppUrl = 'https://t.me/Profiltybot/Profilty'; // Твоя ссылка из BotFather
+        const webAppUrl = 'https://t.me/ProfitlyBot/Profitly'; // Убедись, что имя бота правильное
         
         const inlineKeyboard = {
             inline_keyboard: [[
@@ -651,8 +651,9 @@ app.post('/webhook', async (req, res) => {
                 text: 'Добро пожаловать в Profitly! Нажмите на кнопку ниже, чтобы открыть приложение:',
                 reply_markup: inlineKeyboard
             });
+            console.log(`✅ Сообщение отправлено в чат ${chatId}`);
         } catch (error) {
-            console.error('Ошибка отправки сообщения:', error.message);
+            console.error('❌ Ошибка отправки сообщения:', error.message);
         }
     }
     res.sendStatus(200);
@@ -662,16 +663,16 @@ app.post('/webhook', async (req, res) => {
 async function setWebhook() {
     const webhookUrl = `${botUrl}/webhook`;
     try {
-        await axios.post(`https://api.telegram.org/bot${botToken}/setWebhook`, {
+        const response = await axios.post(`https://api.telegram.org/bot${botToken}/setWebhook`, {
             url: webhookUrl
         });
-        console.log(`✅ Webhook установлен: ${webhookUrl}`);
+        console.log(`✅ Webhook установлен: ${webhookUrl}`, response.data);
     } catch (error) {
         console.error('❌ Ошибка установки webhook:', error.message);
     }
 }
 
-// Запускаем установку webhook
-setTimeout(setWebhook, 5000);
+// Запускаем установку webhook через 3 секунды после старта
+setTimeout(setWebhook, 3000);
 
 app.listen(PORT, () => console.log(`✅ Profitly запущен на http://localhost:${PORT}`));
