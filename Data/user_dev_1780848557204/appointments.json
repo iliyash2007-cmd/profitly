@@ -1,0 +1,61 @@
+[
+  {
+    "id": 1780928866478,
+    "clientId": 1780909298325,
+    "clientName": "фыпап",
+    "serviceId": 1,
+    "serviceName": "Маникюр",
+    "date": "2026-06-07",
+    "time": "09:00",
+    "duration": 30,
+    "endTime": "09:30",
+    "status": "pending",
+    "notes": "",
+    "createdAt": "2026-06-08T14:27:46.478Z"
+  },
+  {
+    "id": 1781042764972,
+    "clientId": 1780909298325,
+    "clientName": "фыпап",
+    "serviceId": 1781034887699,
+    "serviceName": "ываыва",
+    "masterId": 1781033754470,
+    "date": "2026-06-09",
+    "time": "12:12",
+    "duration": 30,
+    "endTime": "12:42",
+    "status": "pending",
+    "notes": "",
+    "createdAt": "2026-06-09T22:06:04.972Z"
+  },
+  {
+    "id": 1781042852347,
+    "clientId": 1780909298325,
+    "clientName": "фыпап",
+    "serviceId": 1781034887699,
+    "serviceName": "ываыва",
+    "masterId": 1781033754470,
+    "date": "2026-06-09",
+    "time": "08:00",
+    "duration": 30,
+    "endTime": "08:30",
+    "status": "pending",
+    "notes": "",
+    "createdAt": "2026-06-09T22:07:32.347Z"
+  },
+  {
+    "id": 1781043030898,
+    "clientId": 1780909298325,
+    "clientName": "фыпап",
+    "serviceId": 1781034887699,
+    "serviceName": "ываыва",
+    "masterId": 1781033754470,
+    "date": "2026-06-09",
+    "time": "12:11",
+    "duration": 30,
+    "endTime": "12:41",
+    "status": "pending",
+    "notes": "",
+    "createdAt": "2026-06-09T22:10:30.898Z"
+  }
+]
